@@ -3,11 +3,10 @@
 namespace Marshmallow\MarketingData\Nova\Traits;
 
 use Illuminate\Support\Arr;
-use Laravel\Nova\Fields\Line;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\KeyValue;
+use Laravel\Nova\Fields\Line;
+use Laravel\Nova\Fields\Stack;
 
 trait MarketingDataFields
 {
@@ -22,7 +21,7 @@ trait MarketingDataFields
                 ->extraClasses('font-normal text-xs'),
         ]);
 
-        $fields[] =  KeyValue::make(__('Marketing Parameters'), 'marketing_parameter_list')
+        $fields[] = KeyValue::make(__('Marketing Parameters'), 'marketing_parameter_list')
             ->keyLabel(__('Tag'), 'tag')
             ->valueLabel(__('Value'), 'value')
             ->fullWidth()

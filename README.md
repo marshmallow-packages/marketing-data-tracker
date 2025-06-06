@@ -35,6 +35,15 @@ And add the function to your model to save the marketing parameters:
     $model->setUtmSourceData(forget: false);
 ```
 
+For a Nova resource add the MarketingDataFields trait to your resource and add the fields to your fields function:
+
+```php
+use Marshmallow\MarketingData\Fields\MarketingDataFields;
+
+ Panel::make(__('Marketing Data'), $this->getMarketingDataFields()),
+
+```
+
 ### Google Ads
 
 On campaign level set the 'custom parameter' to 'campaign' and the value to the campaign Name without spaces.

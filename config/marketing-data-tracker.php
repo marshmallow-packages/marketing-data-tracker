@@ -51,6 +51,8 @@ return [
         'gclid',
         'gbraid',
         'wbraid',
+        'gad_source',
+        'gad_medium',
         'landing_url',
         'landing_full_url',
         'landing_path',

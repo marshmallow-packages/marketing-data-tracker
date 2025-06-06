@@ -34,7 +34,7 @@ trait HasMarketingParameters
             $this->addUtmSessionData($forget);
             $this->addSourceData($forget);
         } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
+            throw new \Exception('Error setting Marketing data: ' . $exception->getMessage());
         }
     }
 

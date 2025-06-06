@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Marketing;
+namespace Marshmallow\MarketingData\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

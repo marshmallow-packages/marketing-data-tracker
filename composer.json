@@ -66,7 +66,7 @@
                 "Marshmallow\\MarketingData\\MarketingDataServiceProvider"
             ],
             "aliases": {
-                "MarketingData": "Marshmallow\\MarketingData\\Facades\\MarketingData"
+                "MarketingDataTracker": "Marshmallow\\MarketingData\\Facades\\MarketingDataTracker"
             }
         }
     },

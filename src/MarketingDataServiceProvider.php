@@ -18,8 +18,6 @@ class MarketingDataServiceProvider extends PackageServiceProvider
         $package
             ->name('marketing-data-tracker')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_marketing_data_tracker_table')
-            ->hasCommand(MarketingDataCommand::class);
+            ->hasMigration('create_marketing_data_tracker_table');
     }
 }

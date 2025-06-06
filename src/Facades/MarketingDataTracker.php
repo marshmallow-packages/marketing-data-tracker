@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Marshmallow\MarketingData\MarketingData
  */
-class MarketingData extends Facade
+class MarketingDataTracker extends Facade
 {
     protected static function getFacadeAccessor(): string
     {

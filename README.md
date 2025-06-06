@@ -1,4 +1,4 @@
-# Parse and store marketing parameters like gclid, utm_*, and adid, and automatically attach them to user conversions or models in Laravel.
+# Parse and store marketing parameters like gclid, utm\_\*, and adid, and automatically attach them to user conversions or models in Laravel.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow-packages/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/marketing-data-tracker)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/marshmallow-packages/marketing-data-tracker/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/marshmallow-packages/marketing-data-tracker/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -6,14 +6,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/marshmallow-packages/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/marketing-data-tracker)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/marketing-data-tracker.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/marketing-data-tracker)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Installation
 
@@ -36,18 +28,14 @@ You can publish the config file with:
 php artisan vendor:publish --tag="marketing-data-tracker-config"
 ```
 
-This is the contents of the published config file:
+After add the HasMarketingParameters trait to your model. And add the midleware `Marshmallow\MarketingDataTracker\Http\Middleware\ParseMarketingParameters` to your `web` middleware group within your `app/Http/Kernel.php` file:
 
-```php
-return [
-];
-```
+### Google Ads
 
-Optionally, you can publish the views using
+On campaign level set the 'custom parameter' to 'campaign' and the value to the campaign Name without spaces.
 
-```bash
-php artisan vendor:publish --tag="marketing-data-tracker-views"
-```
+After, add the following to the addon url on the account level;
+'utm_source=google&utm_medium=cpc&utm_term={keyword}&utm_content={creative}&mm_campaignid={campaignid}&mm_adgroupid={adgroupid}&mm_feedid={feeditemid}&mm_position={adposition}&mm_linterest={loc_interest_ms}&mm_lphys={loc_physical_ms}&mm_matchtype={matchtype}&mm_network={network}&mm_device={device}&mm_devicemodel={devicemodel}&mm_creative={creative}&mm_keyword={keyword}&mm_placement={placement}&mm_targetid={target}&mm_version=G2&gclid={gclid}&utm_campaign={\_campaign}';
 
 ## Usage
 
@@ -76,8 +64,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Marshmallow](https://github.com/marshmallow-packages)
-- [All Contributors](../../contributors)
+-   [Marshmallow](https://github.com/marshmallow-packages)
+-   [All Contributors](../../contributors)
 
 ## License
 

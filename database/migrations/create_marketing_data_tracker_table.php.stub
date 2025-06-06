@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('marketing_data_tracker_table', function (Blueprint $table) {
+        Schema::create('mm_marketing_data', function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
+            $table->morphs('marketing_datable');
+            $table->json('data')->nullable();
             $table->timestamps();
+            $table->unique(['metadatable_id', 'metadatable_type']);
         });
     }
 };

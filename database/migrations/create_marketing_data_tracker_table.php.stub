@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('mm_marketing_data', function (Blueprint $table) {
             $table->id();
-            $table->morphs('marketing_datable');
+            $table->morphs('marketing_datable', 'mm_marketing_datable_index');
             $table->json('data')->nullable();
             $table->timestamps();
-            $table->unique(['marketing_datable_id', 'marketing_datable_type', 'mm_marketing_datable_unique']);
+            $table->unique(['marketing_datable_id', 'marketing_datable_type'], 'mm_marketing_datable_unique');
         });
     }
 };

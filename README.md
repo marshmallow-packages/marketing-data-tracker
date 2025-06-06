@@ -30,12 +30,17 @@ php artisan vendor:publish --tag="marketing-data-tracker-config"
 
 After add the HasMarketingParameters trait to your model. And add the midleware `\Marshmallow\MarketingData\Middleware\ParseMarketingParameters::class,` to your `web` middleware group within your `app/Http/Kernel.php` file.
 
-For a Nova resource add the MarketingDataFields trait to your resource and add the fields to your fields function:
+For a Nova resource add the MarketingDataFields trait to your resource and add the functino to your fields array:
 
 ```php
 use Marshmallow\MarketingData\Fields\MarketingDataFields;
 
- Panel::make(__('Marketing Data'), $this->getMarketingDataFields()),
+$this->getMarketingDataFields(
+    with_utm_data: true,
+    with_google_ids: true,
+    with_all_data: false,
+    with_raw_data: true
+),
 
 ```
 
@@ -44,13 +49,18 @@ use Marshmallow\MarketingData\Fields\MarketingDataFields;
 On campaign level set the 'custom parameter' to 'campaign' and the value to the campaign Name without spaces.
 
 After, add the following to the addon url on the account level;
+
+```text
 'utm_source=google&utm_medium=cpc&utm_term={keyword}&utm_content={creative}&mm_campaignid={campaignid}&mm_adgroupid={adgroupid}&mm_feedid={feeditemid}&mm_position={adposition}&mm_linterest={loc_interest_ms}&mm_lphys={loc_physical_ms}&mm_matchtype={matchtype}&mm_network={network}&mm_device={device}&mm_devicemodel={devicemodel}&mm_creative={creative}&mm_keyword={keyword}&mm_placement={placement}&mm_targetid={target}&mm_version=G2&gclid={gclid}&utm_campaign={\_campaign}';
+```
 
 ## Usage
 
-And add the function to your model to save the marketing parameters:
+Add the trait and add the function to your model to save the marketing parameters:
 
 ```php
+    use Marshmallow\MarketingData\Traits\HasMarketingParameters;
+
     $model->setUtmSourceData(forget: false);
 ```
 

@@ -64,7 +64,7 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
+        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
 
         return preg_match($ignore_expression, $request->path());
     }

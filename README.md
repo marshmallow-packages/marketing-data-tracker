@@ -1,9 +1,8 @@
 # Parse and store marketing parameters like gclid, utm\_\*, and adid, and automatically attach them to user conversions or models in Laravel.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow-packages/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/marketing-data-tracker)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/marshmallow-packages/marketing-data-tracker/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/marshmallow-packages/marketing-data-tracker/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow/marketing-data-tracker)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/marshmallow-packages/marketing-data-tracker/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/marshmallow-packages/marketing-data-tracker/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow-packages/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/marketing-data-tracker)
+[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow/marketing-data-tracker.svg?style=flat-square)](https://packagist.org/packages/marshmallow/marketing-data-tracker)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 

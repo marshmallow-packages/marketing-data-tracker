@@ -40,7 +40,7 @@ class ParseMarketingParameters
         if (session()->has($session_key)) {
             $session_data = session()->get($session_key);
             $utm_source = Arr::get($session_data, 'utm_source', null);
-            if ($utm_source) {
+            if ($session_data || $utm_source) {
                 return;
             }
         }
@@ -57,6 +57,7 @@ class ParseMarketingParameters
                 $all_input_keys = $request->keys();
                 $parameter_group_key = Str::before($parameter_key, '_*');
                 $parameter_key = Str::before($parameter_key, '*');
+
                 $matching_keys = collect($all_input_keys)->filter(function ($key) use ($parameter_key) {
                     return Str::startsWith($key, $parameter_key);
                 })->mapWithKeys(function ($matching_key) use ($request) {

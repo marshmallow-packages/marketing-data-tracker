@@ -54,6 +54,11 @@ return [
         'landing_url',
         'landing_full_url',
         'landing_path',
+        'source_url',
+        'source_path',
+        'previous_url',
+        'request_url',
+        'referer_url',
         'gad_*', // Catch all for Google Ads parameters
     ],
 

@@ -4,6 +4,7 @@ namespace Marshmallow\MarketingData\Traits;
 
 use Illuminate\Support\Str;
 use Marshmallow\MarketingData\Casts\MarketingDataCast;
+use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 trait HasMarketingParameters
 {
@@ -12,7 +13,7 @@ trait HasMarketingParameters
 
     public function getHasMarketingParametersCasts()
     {
-        $parameters = config('marketing-data-tracker.store_marketing_parameters', []);
+        $parameters = MarketingDataTracker::getMarketingDataParameters();
         if (empty($parameters)) {
             return [];
         }
@@ -23,6 +24,8 @@ trait HasMarketingParameters
 
             return [$parameter => MarketingDataCast::class];
         })->toArray();
+
+        return $parameters;
     }
 
     public function setUtmSourceData($forget = true)
@@ -49,8 +52,14 @@ trait HasMarketingParameters
             } else {
                 $source_values = session()->get($session_key);
             }
+
+            $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
+
             if (is_array($source_values) && ! empty($source_values)) {
                 foreach ($source_values as $key => $value) {
+                    if (! in_array($key, $allowed_parameters)) {
+                        continue;
+                    }
                     $this->$key = $value;
                 }
                 $this->updateQuietly($source_values);
@@ -60,14 +69,21 @@ trait HasMarketingParameters
 
     public function addUtmSessionData($forget = true)
     {
-        if (session()->has('mm_utm_values')) {
+        $session_key = 'mm_utm_values';
+        if (session()->has($session_key)) {
             if ($forget) {
-                $utm_values = session()->pull('mm_utm_values');
+                $utm_values = session()->pull($session_key);
             } else {
-                $utm_values = session()->get('mm_utm_values');
+                $utm_values = session()->get($session_key);
             }
+
+            $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
+
             if (is_array($utm_values) && ! empty($utm_values)) {
                 foreach ($utm_values as $key => $value) {
+                    if (! in_array($key, $allowed_parameters)) {
+                        continue;
+                    }
                     $this->$key = $value;
                 }
 
@@ -80,7 +96,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - '.$this->utm_medium;
+            $field .= ' - ' . $this->utm_medium;
         }
 
         return Str::title($field);
@@ -100,7 +116,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -110,7 +126,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();

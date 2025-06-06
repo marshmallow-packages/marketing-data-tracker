@@ -16,7 +16,7 @@ class MarketingData extends Model
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->setTable(MarketingDataTracker::getMenusTableName());
+        $this->setTable(MarketingDataTracker::getMarketingDataTableName());
     }
 
     protected $guarded = [];

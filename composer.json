@@ -1,5 +1,5 @@
 {
-    "name": "marshmallow-packages/marketing-data-tracker",
+    "name": "marshmallow/marketing-data-tracker",
     "description": "Parse and store marketing parameters like gclid, utm_*, and adid, and automatically attach them to user conversions or models in Laravel.",
     "keywords": [
         "Marshmallow",

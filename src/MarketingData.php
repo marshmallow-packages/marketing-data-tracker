@@ -47,11 +47,11 @@ class MarketingData
             return true;
         }
 
-        if (self::shouldIgnoreUrl($request)) {
+        if (self::shouldIgnorePath($request)) {
             return true;
         }
 
-        return false
+        return false;
     }
 
     public static function shouldIgnorePath($request)

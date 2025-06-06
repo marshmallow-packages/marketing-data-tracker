@@ -11,6 +11,11 @@ trait HasMarketingParameters
     use HasMarketingData;
     use HasTraitsWithCasts;
 
+    public function getGoogleClickIdParameters(): array
+    {
+        return ['gclid', 'gbraid', 'wbraid'];
+    }
+
     public function getHasMarketingParametersCasts()
     {
         $parameters = MarketingDataTracker::getMarketingDataParameters();
@@ -34,7 +39,7 @@ trait HasMarketingParameters
             $this->addUtmSessionData($forget);
             $this->addSourceData($forget);
         } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
+            throw new \Exception('Error setting Marketing data: ' . $exception->getMessage());
         }
     }
 
@@ -96,7 +101,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - '.$this->utm_medium;
+            $field .= ' - ' . $this->utm_medium;
         }
 
         return Str::title($field);
@@ -116,7 +121,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -126,7 +131,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -170,14 +175,18 @@ trait HasMarketingParameters
         return collect(config('marketing-data-tracker.hidden_marketing_parameters', []));
     }
 
-    public function getMarketingParameterListAttribute()
+    public function getMarketingParametersList($include_hidden = false, $format = true)
     {
         $parameters = $this->getHasMarketingParametersCasts();
-        $fields = collect($parameters)->keys()->reject(function ($field) {
-            return $this->hideFields()->contains($field);
-        });
+        $fields = collect($parameters)->keys();
 
-        $fieldValues = $fields->mapWithKeys(function ($field) {
+        if (! $include_hidden) {
+            $fields = $fields->reject(function ($field) {
+                return $this->hideFields()->contains($field);
+            });
+        }
+
+        $fieldValues = $fields->mapWithKeys(function ($field) use ($format) {
             $value = $this->$field;
 
             if ($value && Str::startsWith($field, 'mm_')) {
@@ -194,11 +203,15 @@ trait HasMarketingParameters
                 return [];
             }
 
-            $field = Str::of($field)
-                ->replace('utm_', '')
-                ->replace('mm_', '')
-                ->replace('_', ' ')
-                ->title()->toString();
+            if ($format) {
+                $field = Str::of($field)
+                    ->replace('utm_', '')
+                    ->replace('mm_', '')
+                    ->replace('_', ' ')
+                    ->title()->toString();
+            } else {
+                $field = Str::of($field)->toString();
+            }
 
             if ($value && is_string($value)) {
                 $value = Str::of($value)->trim()->toString();
@@ -208,5 +221,46 @@ trait HasMarketingParameters
         })->toArray() ?? [];
 
         return $fieldValues;
+    }
+
+    public function getAllRawMarketingParametersAttribute()
+    {
+        return $this->getMarketingParametersList(false, false);
+    }
+
+    public function getAllMarketingParametersAttribute()
+    {
+        return $this->getMarketingParametersList(true, true);
+    }
+
+    public function getMarketingParameterListAttribute()
+    {
+        return $this->getMarketingParametersList(false, true);
+    }
+
+
+
+    public function getHasGoogleIdAttribute(): bool
+    {
+        return collect($this->all_raw_marketing_parameters)->contains(function ($value, $parameter) {
+            $allowed = collect($this->getGoogleClickIdParameters());
+            if ($allowed->contains($parameter)) {
+                return true;
+            }
+        }) ?? false;
+    }
+
+    public function getGoogleIdsAttribute(): array
+    {
+        if ($this->hasGoogleId) {
+            return collect($this->all_raw_marketing_parameters)->mapWithKeys(function ($value, $parameter) {
+                $allowed = collect($this->getGoogleClickIdParameters());
+                if ($allowed->contains($parameter)) {
+                    return [$parameter => $value];
+                }
+                return [];
+            })->toArray();
+        }
+        return [];
     }
 }

@@ -40,7 +40,11 @@ class ParseMarketingParameters
         if (session()->has($session_key)) {
             $session_data = session()->get($session_key);
             $utm_source = Arr::get($session_data, 'utm_source', null);
-            if ($session_data || $utm_source) {
+            $gclid = Arr::get($session_data, 'gclid', null);
+            $gclid_request = $request->input('gclid', null);
+            if ($gclid_request && $gclid_request == $gclid) {
+                return;
+            } elseif ($gclid || $session_data || $utm_source) {
                 return;
             }
         }
@@ -83,7 +87,7 @@ class ParseMarketingParameters
             if ($parameter_key === 'landing_path') {
                 $paramater_value = $request->path();
                 if (! Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/'.$paramater_value;
+                    $paramater_value = '/' . $paramater_value;
                 }
             }
 

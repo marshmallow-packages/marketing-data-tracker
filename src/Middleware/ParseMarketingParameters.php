@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
-class MarketingDataParameters
+class ParseMarketingParameters
 {
     /**
      * Handle an incoming request.
@@ -81,7 +81,7 @@ class MarketingDataParameters
             if ($parameter_key === 'landing_path') {
                 $paramater_value = $request->path();
                 if (! Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/'.$paramater_value;
+                    $paramater_value = '/' . $paramater_value;
                 }
             }
 

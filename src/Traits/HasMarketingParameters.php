@@ -39,7 +39,7 @@ trait HasMarketingParameters
             $this->addUtmSessionData($forget);
             $this->addSourceData($forget);
         } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: ' . $exception->getMessage());
+            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - ' . $this->utm_medium;
+            $field .= ' - '.$this->utm_medium;
         }
 
         return Str::title($field);
@@ -121,7 +121,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - ' . $this->utm_term;
+            $field .= ' - '.$this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -131,7 +131,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - ' . $this->utm_term;
+            $field .= ' - '.$this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -195,6 +195,7 @@ trait HasMarketingParameters
                 $values = collect($value)->mapWithKeys(function ($sub_value, $sub_field) use ($format) {
                     return $this->parseFieldValue($sub_field, $sub_value, $format);
                 })->toArray();
+
                 return $values;
             }
 
@@ -270,9 +271,11 @@ trait HasMarketingParameters
                 if ($allowed->contains($parameter)) {
                     return [$parameter => $value];
                 }
+
                 return [];
             })->toArray();
         }
+
         return [];
     }
 }

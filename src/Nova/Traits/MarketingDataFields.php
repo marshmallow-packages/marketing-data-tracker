@@ -2,13 +2,13 @@
 
 namespace Marshmallow\MarketingData\Nova\Traits;
 
-use Laravel\Nova\Panel;
 use Illuminate\Support\Arr;
-use Laravel\Nova\Fields\Line;
-use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\KeyValue;
+use Laravel\Nova\Fields\Line;
+use Laravel\Nova\Fields\Stack;
+use Laravel\Nova\Panel;
 
 trait MarketingDataFields
 {

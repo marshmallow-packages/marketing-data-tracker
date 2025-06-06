@@ -29,11 +29,6 @@ php artisan vendor:publish --tag="marketing-data-tracker-config"
 ```
 
 After add the HasMarketingParameters trait to your model. And add the midleware `\Marshmallow\MarketingData\Middleware\ParseMarketingParameters::class,` to your `web` middleware group within your `app/Http/Kernel.php` file.
-And add the function to your model to save the marketing parameters:
-
-```php
-    $model->setUtmSourceData(forget: false);
-```
 
 For a Nova resource add the MarketingDataFields trait to your resource and add the fields to your fields function:
 
@@ -53,9 +48,10 @@ After, add the following to the addon url on the account level;
 
 ## Usage
 
+And add the function to your model to save the marketing parameters:
+
 ```php
-$marketingData = new Marshmallow\MarketingData();
-echo $marketingData->echoPhrase('Hello, Marshmallow!');
+    $model->setUtmSourceData(forget: false);
 ```
 
 ## Testing

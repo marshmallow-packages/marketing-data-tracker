@@ -44,9 +44,10 @@ class ParseMarketingParameters
                 return;
             }
         }
+
         $parameters = MarketingDataTracker::getMarketingDataParameters();
         $utm_parameters = collect($parameters)->mapWithKeys(function ($parameter_value, $parameter_key) {
-            return [$parameter_key => null];
+            return [$parameter_value => null];
         });
 
         $parameter_values = $utm_parameters->mapWithKeys(function ($paramater_value, $parameter_key) use ($request) {

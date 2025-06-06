@@ -28,7 +28,7 @@ You can publish the config file with:
 php artisan vendor:publish --tag="marketing-data-tracker-config"
 ```
 
-After add the HasMarketingParameters trait to your model. And add the midleware `Marshmallow\MarketingDataTracker\Http\Middleware\ParseMarketingParameters` to your `web` middleware group within your `app/Http/Kernel.php` file.
+After add the HasMarketingParameters trait to your model. And add the midleware `\Marshmallow\MarketingData\Middleware\ParseMarketingParameters::class,` to your `web` middleware group within your `app/Http/Kernel.php` file.
 And add the function to your model to save the marketing parameters:
 
 ```php

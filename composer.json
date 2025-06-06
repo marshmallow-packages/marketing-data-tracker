@@ -1,22 +1,22 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "marshmallow-packages/marketing-data-tracker",
+    "description": "Parse and store marketing parameters like gclid, utm_*, and adid, and automatically attach them to user conversions or models in Laravel.",
     "keywords": [
-        ":vendor_name",
+        "Marshmallow",
         "laravel",
-        ":package_slug"
+        "marketing-data-tracker"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/marshmallow-packages/marketing-data-tracker",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Marshmallow",
+            "email": "lars@marshmallow.dev",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.4",
+        "php": "^8.0",
         "spatie/laravel-package-tools": "^1.16",
         "illuminate/contracts": "^10.0||^11.0||^12.0"
     },
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Marshmallow\\MarketingData\\": "src/",
+            "Marshmallow\\MarketingData\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Marshmallow\\MarketingData\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +63,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Marshmallow\\MarketingData\\MarketingDataServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "MarketingData": "Marshmallow\\MarketingData\\Facades\\MarketingData"
             }
         }
     },

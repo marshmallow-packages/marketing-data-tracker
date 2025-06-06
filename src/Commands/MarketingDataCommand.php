@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Marshmallow\MarketingData\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class MarketingDataCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'marketing-data-tracker';
 
     public $description = 'My command';
 

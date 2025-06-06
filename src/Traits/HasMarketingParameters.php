@@ -177,8 +177,8 @@ trait HasMarketingParameters
 
     public function getMarketingParametersList($include_hidden = false, $format = true)
     {
-        $parameters = $this->getHasMarketingParametersCasts();
-        $fields = collect($parameters)->keys();
+        $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
+        $fields = collect($allowed_parameters)->values();
 
         if (! $include_hidden) {
             $fields = $fields->reject(function ($field) {
@@ -187,45 +187,59 @@ trait HasMarketingParameters
         }
 
         $fieldValues = $fields->mapWithKeys(function ($field) use ($format) {
-            $value = $this->$field;
-
-            if ($value && Str::startsWith($field, 'mm_')) {
-
-                $value = match ($field) {
-                    'mm_matchtype' => $this->getMatchtype($value),
-                    'mm_network' => $this->getNetwork($value),
-                    'mm_device' => $this->getDevice($value),
-                    default => $value,
-                };
+            if (Str::of($field)->endsWith('*')) {
+                $field = Str::of($field)->before('*')->beforeLast('_')->toString();
+            }
+            $value = $this->$field ?? null;
+            if (is_array($value)) {
+                $values = collect($value)->mapWithKeys(function ($sub_value, $sub_field) use ($format) {
+                    return $this->parseFieldValue($sub_field, $sub_value, $format);
+                })->toArray();
+                return $values;
             }
 
-            if (! $value) {
-                return [];
-            }
-
-            if ($format) {
-                $field = Str::of($field)
-                    ->replace('utm_', '')
-                    ->replace('mm_', '')
-                    ->replace('_', ' ')
-                    ->title()->toString();
-            } else {
-                $field = Str::of($field)->toString();
-            }
-
-            if ($value && is_string($value)) {
-                $value = Str::of($value)->trim()->toString();
-            }
-
-            return [$field => $value];
+            return $this->parseFieldValue($field, $value, $format);
         })->toArray() ?? [];
 
         return $fieldValues;
     }
 
+    public function parseFieldValue($field, $value, $format = true): array
+    {
+
+        if ($value && Str::startsWith($field, 'mm_')) {
+            $value = match ($field) {
+                'mm_matchtype' => $this->getMatchtype($value),
+                'mm_network' => $this->getNetwork($value),
+                'mm_device' => $this->getDevice($value),
+                default => $value,
+            };
+        }
+
+        if (! $value) {
+            return [];
+        }
+
+        if ($format) {
+            $field = Str::of($field)
+                ->replace('utm_', '')
+                ->replace('mm_', '')
+                ->replace('_', ' ')
+                ->title()->toString();
+        } else {
+            $field = Str::of($field)->toString();
+        }
+
+        if ($value && is_string($value)) {
+            $value = Str::of($value)->trim()->toString();
+        }
+
+        return [$field => $value];
+    }
+
     public function getAllRawMarketingParametersAttribute()
     {
-        return $this->getMarketingParametersList(false, false);
+        return $this->getMarketingParametersList(true, false);
     }
 
     public function getAllMarketingParametersAttribute()
@@ -237,8 +251,6 @@ trait HasMarketingParameters
     {
         return $this->getMarketingParametersList(false, true);
     }
-
-
 
     public function getHasGoogleIdAttribute(): bool
     {

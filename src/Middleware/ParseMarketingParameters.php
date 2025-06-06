@@ -23,8 +23,10 @@ class ParseMarketingParameters
         }
 
         // Flush for Debug
-        // session()->forget('mm_utm_values');
-        // session()->forget('mm_source_values');
+        if ($request->has('mm_flush')) {
+            session()->forget('mm_utm_values');
+            session()->forget('mm_source_values');
+        }
 
         // Set UTM values
         $this->setUtmValues($request, 'mm_utm_values');
@@ -56,11 +58,13 @@ class ParseMarketingParameters
 
         $parameter_values = $utm_parameters->mapWithKeys(function ($paramater_value, $parameter_key) use ($request) {
 
-            // Handle parameters that ends with '_*'
-            if (Str::endsWith($parameter_key, '_*')) {
+            // Handle parameters that ends with '*'
+            if (Str::endsWith($parameter_key, '*')) {
                 $all_input_keys = $request->keys();
-                $parameter_group_key = Str::before($parameter_key, '_*');
+                $parameter_group_key = Str::of($parameter_key)->before('*')->beforeLast('_')->toString();
                 $parameter_key = Str::before($parameter_key, '*');
+
+                ray("Parameter group key: {$parameter_group_key}", $parameter_key);
 
                 $matching_keys = collect($all_input_keys)->filter(function ($key) use ($parameter_key) {
                     return Str::startsWith($key, $parameter_key);
@@ -72,6 +76,10 @@ class ParseMarketingParameters
 
                     return [$matching_key => $paramater_value];
                 })->toArray();
+
+                if (empty($matching_keys)) {
+                    return [];
+                }
 
                 return [$parameter_group_key => $matching_keys];
             }

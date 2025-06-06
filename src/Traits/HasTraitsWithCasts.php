@@ -14,15 +14,15 @@ trait HasTraitsWithCasts
         $class = static::class;
 
         foreach (class_uses_recursive($class) as $trait) {
-            $method = 'get' . class_basename($trait) . 'Casts';
+            $method = 'get'.class_basename($trait).'Casts';
 
-            if (method_exists($class, $method)) {;
+            if (method_exists($class, $method)) {
                 $casts = $this->{$method}();
                 $casts = collect($casts);
                 $this->casts = collect($this->casts)
                     ->merge($casts)
                     ->unique(function ($item, $key) {
-                        return ($key);
+                        return $key;
                     })->toArray();
             }
         }

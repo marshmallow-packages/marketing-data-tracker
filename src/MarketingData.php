@@ -2,8 +2,8 @@
 
 namespace Marshmallow\MarketingData;
 
-use Marshmallow\MarketingData\Models\MarketingData as MarketingDataModel;
 use Marshmallow\MarketingData\Casts\MarketingDataCast;
+use Marshmallow\MarketingData\Models\MarketingData as MarketingDataModel;
 
 class MarketingData
 {
@@ -58,17 +58,17 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
+        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
 
         return preg_match($ignore_expression, $request->path());
     }
 
     public static function isNova($request)
     {
-        return (isset($request->segments()[0]) && in_array($request->segments()[0], [
+        return isset($request->segments()[0]) && in_array($request->segments()[0], [
             'nova-api',
             'nova-vendor',
             ltrim(config('nova.path'), '/'),
-        ]));
+        ]);
     }
 }

@@ -3,10 +3,9 @@
 namespace App\Http\Middleware\Marketing;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Marshmallow\HelperFunctions\Facades\URL;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 class MarketingDataParameters
@@ -15,7 +14,6 @@ class MarketingDataParameters
      * Handle an incoming request.
      *
      * @param  Request  $request
-     * @param  Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -65,8 +63,10 @@ class MarketingDataParameters
                     if ($request->has($matching_key)) {
                         $paramater_value = $request->input($matching_key);
                     }
+
                     return [$matching_key => $paramater_value];
                 })->toArray();
+
                 return [$parameter_group_key => $matching_keys];
             }
 
@@ -80,13 +80,13 @@ class MarketingDataParameters
 
             if ($parameter_key === 'landing_path') {
                 $paramater_value = $request->path();
-                if (!Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/' . $paramater_value;
+                if (! Str::startsWith($paramater_value, '/')) {
+                    $paramater_value = '/'.$paramater_value;
                 }
             }
 
             if ($parameter_key === 'landing_full_url') {
-                $paramater_value = $request->fullUrl();;
+                $paramater_value = $request->fullUrl();
             }
 
             return [$parameter_key => $paramater_value];
@@ -94,14 +94,14 @@ class MarketingDataParameters
             return is_null($session_value);
         })->toArray();
 
-        if ($parameter_values && !empty($parameter_values)) {
+        if ($parameter_values && ! empty($parameter_values)) {
             $request->session()->put($session_key, $parameter_values);
         }
     }
 
     public function setSourceValues($request, $session_key)
     {
-        if (!session()->has($session_key)) {
+        if (! session()->has($session_key)) {
             $intended_url = session()->get('url.intended');
             $source_url = $request->server('HTTP_REFERER');
 
@@ -110,7 +110,7 @@ class MarketingDataParameters
                 'oauth',
                 'password',
                 'reset',
-                'apple.com'
+                'apple.com',
             ]) && $intended_url) {
                 $source_url = $intended_url;
             }
@@ -136,7 +136,7 @@ class MarketingDataParameters
         $source_parameters['request_url'] = $request->url();
         $source_parameters['referer_url'] = $request->server('HTTP_REFERER');
 
-        if ($source_parameters && !empty($source_parameters)) {
+        if ($source_parameters && ! empty($source_parameters)) {
             $request->session()->put($session_key, $source_parameters);
         }
     }

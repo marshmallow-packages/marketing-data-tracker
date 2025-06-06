@@ -2,9 +2,9 @@
 
 namespace Marshmallow\MarketingData\Models;
 
-use Illuminate\Support\Arr;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 class MarketingData extends Model

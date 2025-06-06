@@ -2,9 +2,9 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\DB;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 trait HasMarketingData
@@ -39,8 +39,8 @@ trait HasMarketingData
     public function getMarketingDataCasts(): array
     {
         return collect($this->casts)
-            ->filter(fn($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
-            ->map(fn($cast, $key) => $key)
+            ->filter(fn ($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
+            ->map(fn ($cast, $key) => $key)
             ->toArray();
     }
 

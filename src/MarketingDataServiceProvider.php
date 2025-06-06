@@ -2,7 +2,6 @@
 
 namespace Marshmallow\MarketingData;
 
-use Marshmallow\MarketingData\Commands\MarketingDataCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

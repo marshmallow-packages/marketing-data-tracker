@@ -13,7 +13,7 @@ return new class extends Migration
             $table->morphs('marketing_datable');
             $table->json('data')->nullable();
             $table->timestamps();
-            $table->unique(['metadatable_id', 'metadatable_type']);
+            $table->unique(['marketing_datable_id', 'marketing_datable_type', 'mm_marketing_datable_unique']);
         });
     }
 };

@@ -64,8 +64,6 @@ class ParseMarketingParameters
                 $parameter_group_key = Str::of($parameter_key)->before('*')->beforeLast('_')->toString();
                 $parameter_key = Str::before($parameter_key, '*');
 
-                ray("Parameter group key: {$parameter_group_key}", $parameter_key);
-
                 $matching_keys = collect($all_input_keys)->filter(function ($key) use ($parameter_key) {
                     return Str::startsWith($key, $parameter_key);
                 })->mapWithKeys(function ($matching_key) use ($request) {
@@ -95,7 +93,7 @@ class ParseMarketingParameters
             if ($parameter_key === 'landing_path') {
                 $paramater_value = $request->path();
                 if (! Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/'.$paramater_value;
+                    $paramater_value = '/' . $paramater_value;
                 }
             }
 

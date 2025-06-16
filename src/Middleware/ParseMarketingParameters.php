@@ -93,7 +93,7 @@ class ParseMarketingParameters
             if ($parameter_key === 'landing_path') {
                 $paramater_value = $request->path();
                 if (! Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/' . $paramater_value;
+                    $paramater_value = '/'.$paramater_value;
                 }
             }
 

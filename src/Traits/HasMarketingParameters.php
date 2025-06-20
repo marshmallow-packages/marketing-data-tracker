@@ -212,9 +212,12 @@ trait HasMarketingParameters
         return collect(config('marketing-data-tracker.hidden_marketing_parameters', []));
     }
 
-    public function getMarketingParametersList($include_hidden = false, $format = true)
+    public function getMarketingParametersList($include_hidden = false, $format = true, $for_cookies = false): array
     {
         $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
+        if ($for_cookies) {
+            $allowed_parameters = MarketingDataTracker::getMarketingDataCookies();
+        }
         $fields = collect($allowed_parameters)->values();
 
         if (! $include_hidden) {
@@ -290,9 +293,28 @@ trait HasMarketingParameters
         return $this->getMarketingParametersList(false, true);
     }
 
+    public function getAllRawMarketingCookiesAttribute()
+    {
+        return $this->getMarketingParametersList(true, false, true);
+    }
+
+    public function getAllMarketingCookiesAttribute()
+    {
+        return $this->getMarketingParametersList(true, true, true);
+    }
+
+    public function getAllRawMarketingListAttribute()
+    {
+        $parameters = $this->all_raw_marketing_parameters;
+        $cookies = $this->all_raw_marketing_cookies;
+        $total = array_merge($parameters, $cookies);
+        ray($total);
+        return $total;
+    }
+
     public function getHasGoogleIdAttribute(): bool
     {
-        return collect($this->all_raw_marketing_parameters)->contains(function ($value, $parameter) {
+        return collect($this->all_raw_marketing_list)->contains(function ($value, $parameter) {
             $allowed = collect($this->getGoogleClickIdParameters());
             if ($allowed->contains($parameter)) {
                 return true;
@@ -303,7 +325,7 @@ trait HasMarketingParameters
     public function getGoogleIdsAttribute(): array
     {
         if ($this->hasGoogleId) {
-            return collect($this->all_raw_marketing_parameters)->mapWithKeys(function ($value, $parameter) {
+            return collect($this->all_raw_marketing_list)->mapWithKeys(function ($value, $parameter) {
                 $allowed = collect($this->getGoogleClickIdParameters());
                 if ($allowed->contains($parameter)) {
                     return [$parameter => $value];

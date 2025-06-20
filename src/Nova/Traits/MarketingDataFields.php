@@ -12,7 +12,7 @@ use Laravel\Nova\Panel;
 
 trait MarketingDataFields
 {
-    public function getMarketingDataFields($with_google_ids = false, $with_utm_data = true, $with_all_data = false, $with_raw_data = false)
+    public function getMarketingDataFields($with_google_ids = false, $with_utm_data = true, $with_all_data = false, $with_raw_data = false, $with_cookie_data = false)
     {
 
         $fields = [];
@@ -51,8 +51,18 @@ trait MarketingDataFields
                 ->hideFromIndex();
         }
 
+        if ($with_cookie_data) {
+            $fields[] = KeyValue::make(__('All Marketing Cookies'), 'all_marketing_cookies')
+                ->keyLabel(__('Tag'), 'tag')
+                ->valueLabel(__('Value'), 'value')
+                ->fullWidth()
+                ->readonly()
+                ->exceptOnForms()
+                ->hideFromIndex();
+        }
+
         if ($with_raw_data) {
-            $fields[] = KeyValue::make(__('Raw Marketing Parameters'), 'all_raw_marketing_parameters')
+            $fields[] = KeyValue::make(__('Raw Marketing List'), 'all_raw_marketing_list')
                 ->keyLabel(__('Tag'), 'tag')
                 ->valueLabel(__('Value'), 'value')
                 ->fullWidth()

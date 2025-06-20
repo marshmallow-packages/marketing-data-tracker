@@ -117,8 +117,6 @@ class MarketingData
             return [$key => $value];
         });
 
-        ray($marketing_keys, $data_set);
-
         $marketing_values = $marketing_keys->mapWithKeys(function ($marketing_value, $marketing_key) use ($data_set, $keep_empty_keys) {
 
             // Handle keys that ends with '*'

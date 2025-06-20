@@ -38,7 +38,8 @@ $this->getMarketingDataFields(
     with_utm_data: true,
     with_google_ids: true,
     with_all_data: false,
-    with_raw_data: true
+    with_raw_data: true,
+    with_cookie_data: false,
 ),
 
 ```

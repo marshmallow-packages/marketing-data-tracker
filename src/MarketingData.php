@@ -259,9 +259,6 @@ class MarketingData
                 }
 
                 $matching_keys = $matching_keys->toArray();
-                if ($marketing_key == '_ga') {
-                    ray($all_input_keys, $marketing_key, $marketing_group_key, $data_set, $matching_keys);
-                }
 
                 if (empty($matching_keys)) {
                     return [];

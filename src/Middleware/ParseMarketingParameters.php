@@ -56,7 +56,7 @@ class ParseMarketingParameters
             return [$parameter_value => null];
         });
 
-        $parameter_values = $utm_parameters->mapWithKeys(function ($paramater_value, $parameter_key) use ($request) {
+        $parameter_values = $utm_parameters->mapWithKeys(function ($parameter_value, $parameter_key) use ($request) {
 
             // Handle parameters that ends with '*'
             if (Str::endsWith($parameter_key, '*')) {
@@ -67,12 +67,12 @@ class ParseMarketingParameters
                 $matching_keys = collect($all_input_keys)->filter(function ($key) use ($parameter_key) {
                     return Str::startsWith($key, $parameter_key);
                 })->mapWithKeys(function ($matching_key) use ($request) {
-                    $paramater_value = null;
+                    $parameter_value = null;
                     if ($request->has($matching_key)) {
-                        $paramater_value = $request->input($matching_key);
+                        $parameter_value = $request->input($matching_key);
                     }
 
-                    return [$matching_key => $paramater_value];
+                    return [$matching_key => $parameter_value];
                 })->toArray();
 
                 if (empty($matching_keys)) {
@@ -83,25 +83,25 @@ class ParseMarketingParameters
             }
 
             if ($request->has($parameter_key)) {
-                $paramater_value = $request->input($parameter_key);
+                $parameter_value = $request->input($parameter_key);
             }
 
             if ($parameter_key === 'landing_url') {
-                $paramater_value = $request->url();
+                $parameter_value = $request->url();
             }
 
             if ($parameter_key === 'landing_path') {
-                $paramater_value = $request->path();
-                if (! Str::startsWith($paramater_value, '/')) {
-                    $paramater_value = '/' . $paramater_value;
+                $parameter_value = $request->path();
+                if (! Str::startsWith($parameter_value, '/')) {
+                    $parameter_value = '/' . $parameter_value;
                 }
             }
 
             if ($parameter_key === 'landing_full_url') {
-                $paramater_value = $request->fullUrl();
+                $parameter_value = $request->fullUrl();
             }
 
-            return [$parameter_key => $paramater_value];
+            return [$parameter_key => $parameter_value];
         })->reject(function ($session_value) {
             return is_null($session_value);
         })->toArray();

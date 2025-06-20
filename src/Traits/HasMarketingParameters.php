@@ -308,7 +308,6 @@ trait HasMarketingParameters
         $parameters = $this->all_raw_marketing_parameters;
         $cookies = $this->all_raw_marketing_cookies;
         $total = array_merge($parameters, $cookies);
-        ray($total);
         return $total;
     }
 

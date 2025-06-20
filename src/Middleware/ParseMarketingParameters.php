@@ -26,6 +26,7 @@ class ParseMarketingParameters
         if ($request->has('mm_flush')) {
             session()->forget('mm_utm_values');
             session()->forget('mm_source_values');
+            session()->forget('mm_cookie_values');
         }
 
         // Set UTM values
@@ -34,7 +35,30 @@ class ParseMarketingParameters
         // Set Source values
         $this->setSourceValues($request, 'mm_source_values');
 
+        // Set Cookie values
+        $this->setCookieValues($request, 'mm_cookie_values');
+
         return $next($request);
+    }
+
+    public function setCookieValues($request, $session_key)
+    {
+        if (session()->has($session_key)) {
+            return;
+        }
+
+        ray($request->cookie());
+        $cookie_values = MarketingDataTracker::getCookieValues($request->cookie());
+
+        if ($cookie_values && ! empty($cookie_values)) {
+            $request->session()->put($session_key, $cookie_values);
+        }
+
+        if (session()->has('mm_utm_values')) {
+            $session_data = session()->get('mm_utm_values');
+            $session_data['cookie_values'] = $cookie_values;
+            $request->session()->put('mm_utm_values', $session_data);
+        }
     }
 
     public function setUtmValues($request, $session_key)
@@ -51,40 +75,9 @@ class ParseMarketingParameters
             }
         }
 
-        $parameters = MarketingDataTracker::getMarketingDataParameters();
-        $utm_parameters = collect($parameters)->mapWithKeys(function ($parameter_value, $parameter_key) {
-            return [$parameter_value => null];
-        });
+        $parameter_values_set = MarketingDataTracker::getRequestValues($request->all());
 
-        $parameter_values = $utm_parameters->mapWithKeys(function ($parameter_value, $parameter_key) use ($request) {
-
-            // Handle parameters that ends with '*'
-            if (Str::endsWith($parameter_key, '*')) {
-                $all_input_keys = $request->keys();
-                $parameter_group_key = Str::of($parameter_key)->before('*')->beforeLast('_')->toString();
-                $parameter_key = Str::before($parameter_key, '*');
-
-                $matching_keys = collect($all_input_keys)->filter(function ($key) use ($parameter_key) {
-                    return Str::startsWith($key, $parameter_key);
-                })->mapWithKeys(function ($matching_key) use ($request) {
-                    $parameter_value = null;
-                    if ($request->has($matching_key)) {
-                        $parameter_value = $request->input($matching_key);
-                    }
-
-                    return [$matching_key => $parameter_value];
-                })->toArray();
-
-                if (empty($matching_keys)) {
-                    return [];
-                }
-
-                return [$parameter_group_key => $matching_keys];
-            }
-
-            if ($request->has($parameter_key)) {
-                $parameter_value = $request->input($parameter_key);
-            }
+        $parameter_values = collect($parameter_values_set)->mapWithKeys(function ($parameter_value, $parameter_key) use ($request) {
 
             if ($parameter_key === 'landing_url') {
                 $parameter_value = $request->url();
@@ -102,8 +95,8 @@ class ParseMarketingParameters
             }
 
             return [$parameter_key => $parameter_value];
-        })->reject(function ($session_value) {
-            return is_null($session_value);
+        })->reject(function ($parameter_value) {
+            return is_null($parameter_value);
         })->toArray();
 
         if ($parameter_values && ! empty($parameter_values)) {

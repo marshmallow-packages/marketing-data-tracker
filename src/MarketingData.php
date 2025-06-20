@@ -107,10 +107,11 @@ class MarketingData
         }
 
         $cookie_data = $request->cookie();
+
         $cookie_values = self::getCookieValues($cookie_data);
 
         if ($cookie_values && ! empty($cookie_values)) {
-            $cookie_values = array_merge($cookie_values, $session_data ?? []);
+            $cookie_values = array_merge($session_data, $cookie_values ?? []);
             $request->session()->put($session_key, $cookie_values);
         }
 

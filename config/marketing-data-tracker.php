@@ -64,6 +64,12 @@ return [
         'gad_*', // Catch all for Google Ads parameters
     ],
 
+    'store_marketing_cookies' => [
+        '_fbp',
+        '_ga*',
+        '_gcl*',
+    ],
+
     /*
      * The parameters that should are stored, but should be hidden.
      */

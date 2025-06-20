@@ -43,6 +43,18 @@ class MarketingData
         return $parameters;
     }
 
+    public static function getMarketingDataCookies(): array
+    {
+        $parameters = config('marketing-data-tracker.store_marketing_cookies', []);
+
+        if (empty($parameters)) {
+            return [];
+        }
+
+        return $parameters;
+    }
+
+
     public static function shouldIgnoreRequest($request)
     {
         if (app()->runningInConsole()) {
@@ -64,7 +76,7 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
+        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
 
         return preg_match($ignore_expression, $request->path());
     }

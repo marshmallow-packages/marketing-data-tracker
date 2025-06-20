@@ -47,7 +47,8 @@ class ParseMarketingParameters
             return;
         }
 
-        ray($request->cookie());
+        /// WIP FOR ALL Cookies
+
         $cookie_values = MarketingDataTracker::getCookieValues($request->cookie());
 
         if ($cookie_values && ! empty($cookie_values)) {

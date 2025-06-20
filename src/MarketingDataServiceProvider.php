@@ -2,6 +2,7 @@
 
 namespace Marshmallow\MarketingData;
 
+use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -17,6 +18,14 @@ class MarketingDataServiceProvider extends PackageServiceProvider
         $package
             ->name('marketing-data-tracker')
             ->hasConfigFile()
-            ->hasMigration('create_marketing_data_tracker_table');
+            ->hasMigration('create_marketing_data_tracker_table')
+            ->hasViews()
+            ->hasRoute('web');
+    }
+
+
+    public function bootingPackage()
+    {
+        Blade::component('marketing-data-tracker::components.marketing-cookies', 'marshmallow-marketing-cookies');
     }
 }

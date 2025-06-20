@@ -19,18 +19,25 @@ trait HasMarketingParameters
     public function getHasMarketingParametersCasts()
     {
         $parameters = MarketingDataTracker::getMarketingDataParameters();
-        if (empty($parameters)) {
+        $cookies = MarketingDataTracker::getMarketingDataCookies();
+
+        $casts = array_merge($parameters, $cookies);
+
+        $casts[] = 'cookie_values';
+
+        if (empty($casts)) {
             return [];
         }
-        $parameters = collect($parameters)->mapWithKeys(function ($parameter) {
-            if (Str::endsWith($parameter, '_*')) {
-                $parameter = Str::before($parameter, '_*');
+
+        $casts = collect($casts)->mapWithKeys(function ($cast) {
+            if (Str::endsWith($cast, '_*')) {
+                $cast = Str::before($cast, '_*');
             }
 
-            return [$parameter => MarketingDataCast::class];
+            return [$cast => MarketingDataCast::class];
         })->toArray();
 
-        return $parameters;
+        return $casts;
     }
 
     public function setUtmSourceData($forget = true)
@@ -38,8 +45,38 @@ trait HasMarketingParameters
         try {
             $this->addUtmSessionData($forget);
             $this->addSourceData($forget);
+            $this->addCookieData($forget);
         } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
+            throw new \Exception('Error setting Marketing data: ' . $exception->getMessage());
+        }
+    }
+
+    public function addCookieData($forget = true, $request = null)
+    {
+        if (! $request) {
+            $request = request();
+        }
+
+        $session_key = 'mm_cookie_values';
+
+        if (session()->has($session_key)) {
+            if ($forget) {
+                $source_values = session()->pull($session_key);
+            } else {
+                $source_values = session()->get($session_key);
+            }
+
+            $allowed_parameters = MarketingDataTracker::getMarketingDataCookies();
+
+            if (is_array($source_values) && ! empty($source_values)) {
+                foreach ($source_values as $key => $value) {
+                    if (! in_array($key, $allowed_parameters)) {
+                        continue;
+                    }
+                    $this->$key = $value;
+                }
+                $this->updateQuietly($source_values);
+            }
         }
     }
 
@@ -101,7 +138,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - '.$this->utm_medium;
+            $field .= ' - ' . $this->utm_medium;
         }
 
         return Str::title($field);
@@ -121,7 +158,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -131,7 +168,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();

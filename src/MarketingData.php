@@ -56,7 +56,6 @@ class MarketingData
         return $parameters;
     }
 
-
     public static function shouldIgnoreRequest($request)
     {
         if (app()->runningInConsole()) {
@@ -78,7 +77,7 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
+        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
 
         return preg_match($ignore_expression, $request->path());
     }
@@ -156,7 +155,7 @@ class MarketingData
             if ($parameter_key === 'landing_path') {
                 $parameter_value = $request->path();
                 if (! Str::startsWith($parameter_value, '/')) {
-                    $parameter_value = '/' . $parameter_value;
+                    $parameter_value = '/'.$parameter_value;
                 }
             }
 
@@ -241,7 +240,6 @@ class MarketingData
 
                 $marketing_key = Str::before($marketing_key, '*');
 
-
                 $matching_keys = collect($all_input_keys)->filter(function ($key) use ($marketing_key) {
                     return Str::startsWith($key, $marketing_key);
                 })->mapWithKeys(function ($matching_key) use ($data_set) {
@@ -253,7 +251,7 @@ class MarketingData
                     return [$matching_key => $marketing_value];
                 });
 
-                if (!$keep_empty_keys) {
+                if (! $keep_empty_keys) {
                     $matching_keys = $matching_keys->reject(function ($marketing_value, $marketing_key) {
                         return is_null($marketing_value);
                     });
@@ -264,6 +262,7 @@ class MarketingData
                 if (empty($matching_keys)) {
                     return [];
                 }
+
                 return [$marketing_group_key->toString() => $matching_keys];
             }
 
@@ -274,7 +273,7 @@ class MarketingData
             return [$marketing_key => $marketing_value];
         });
 
-        if (!$keep_empty_keys) {
+        if (! $keep_empty_keys) {
             $marketing_values = $marketing_values->reject(function ($marketing_value, $marketing_key) {
                 return is_null($marketing_value);
             });

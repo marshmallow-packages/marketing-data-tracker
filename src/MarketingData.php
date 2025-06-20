@@ -103,14 +103,14 @@ class MarketingData
     public static function setCookieValues($request, $session_key)
     {
         if (session()->has($session_key)) {
-            return;
+            $session_data = session()->get($session_key);
         }
 
-        /// WIP FOR ALL Cookies
         $cookie_data = $request->cookie();
         $cookie_values = self::getCookieValues($cookie_data);
 
         if ($cookie_values && ! empty($cookie_values)) {
+            $cookie_values = array_merge($cookie_values, $session_data ?? []);
             $request->session()->put($session_key, $cookie_values);
         }
 

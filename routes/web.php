@@ -5,4 +5,4 @@ use Marshmallow\MarketingData\Http\Controllers\StoreMarketingCookiesController;
 
 Route::post('mm-store-marketing-cookies', StoreMarketingCookiesController::class)
     ->middleware('web')
-    ->name('marketing-data-tracker.store-marketing-cookies');
+    ->name('mm-store-marketing-cookies');

@@ -20,7 +20,7 @@
         console.log('Storing marketing cookies:', cookies);
 
         // Use fetch API for better performance and modern approach
-        fetch("{{ route('marketing-data-tracker.store-marketing-cookies') }}", {
+        fetch("{{ route('mm-store-marketing-cookies') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

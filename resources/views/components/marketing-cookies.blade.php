@@ -17,7 +17,7 @@
             return;
         }
 
-        console.log('Storing marketing cookies:', cookies);
+        // console.log('Storing marketing cookies:', cookies);
 
         // Use fetch API for better performance and modern approach
         fetch("{{ route('mm-store-marketing-cookies') }}", {
@@ -38,10 +38,10 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Marketing cookies stored successfully:', data);
+                // console.log('Marketing cookies stored successfully:', data);
             })
             .catch(error => {
-                console.error('Error storing marketing cookies:', error);
+                // console.error('Error storing marketing cookies:', error);
             });
     }
 

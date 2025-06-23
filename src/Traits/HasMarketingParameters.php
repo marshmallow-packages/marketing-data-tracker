@@ -30,12 +30,42 @@ trait HasMarketingParameters
         }
 
         $casts = collect($casts)->mapWithKeys(function ($cast) {
+            return [$cast => MarketingDataCast::class];
+        });
+
+        $casts->each(function ($class, $cast) use (&$casts) {
             if (Str::endsWith($cast, '_*')) {
                 $cast = Str::before($cast, '_*');
+                $casts[$cast] = MarketingDataCast::class;
             }
+        });
 
-            return [$cast => MarketingDataCast::class];
-        })->toArray();
+        $casts->each(function ($class, $cast) use (&$casts) {
+            if (Str::endsWith($cast, '*')) {
+                $cast = Str::before($cast, '*');
+                $casts[$cast] = MarketingDataCast::class;
+            }
+        });
+
+        $casts->each(function ($class, $cast) use (&$casts) {
+            $field = Str::of($cast)->trim()->toString();
+            if (!Str::of($field)->endsWith('*')) {
+                return;
+            }
+            $cast = Str::of($field)->before('*')->beforeLast('_');
+            if ($cast->isEmpty()) {
+                $cast = Str::of($field)->before('*');
+            }
+            if (Str::of($cast)->startsWith('_')) {
+                $cast = Str::of($cast)->after('_');
+            }
+            $cast = $cast->toString();
+            if ($cast) {
+                $casts[$cast] = MarketingDataCast::class;
+            }
+        });
+
+        $casts = $casts->toArray();
 
         return $casts;
     }
@@ -228,13 +258,7 @@ trait HasMarketingParameters
 
         $fieldValues = $fields->mapWithKeys(function ($field) use ($format) {
             if (Str::of($field)->endsWith('*')) {
-                $field = Str::of($field)->before('*')->beforeLast('_');
-                if ($field->isEmpty()) {
-                    $field = Str::of($field)->before('*');
-                }
-                if (Str::of($field)->startsWith('_')) {
-                    $field = Str::of($field)->after('_');
-                }
+                $field = Str::of($field)->before('*')->beforeLast('_')->toString();
             }
             $value = $this->$field ?? null;
             if (is_array($value)) {

@@ -23,7 +23,6 @@ class MarketingDataServiceProvider extends PackageServiceProvider
             ->hasRoute('web');
     }
 
-
     public function bootingPackage()
     {
         Blade::component('marketing-data-tracker::components.marketing-cookies', 'marshmallow-marketing-cookies');

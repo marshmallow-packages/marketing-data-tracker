@@ -49,7 +49,7 @@ trait HasMarketingParameters
 
         $casts->each(function ($class, $cast) use (&$casts) {
             $field = Str::of($cast)->trim()->toString();
-            if (!Str::of($field)->endsWith('*')) {
+            if (! Str::of($field)->endsWith('*')) {
                 return;
             }
             $cast = Str::of($field)->before('*')->beforeLast('_');
@@ -77,7 +77,7 @@ trait HasMarketingParameters
             $this->addSourceData($forget);
             $this->addCookieData($forget);
         } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: ' . $exception->getMessage());
+            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - ' . $this->utm_medium;
+            $field .= ' - '.$this->utm_medium;
         }
 
         return Str::title($field);
@@ -188,7 +188,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - ' . $this->utm_term;
+            $field .= ' - '.$this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -198,7 +198,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - ' . $this->utm_term;
+            $field .= ' - '.$this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -347,6 +347,7 @@ trait HasMarketingParameters
         $parameters = $this->all_raw_marketing_parameters;
         $cookies = $this->all_raw_marketing_cookies;
         $total = array_merge($parameters, $cookies);
+
         return $total;
     }
 

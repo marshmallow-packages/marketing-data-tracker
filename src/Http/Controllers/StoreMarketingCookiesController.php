@@ -2,9 +2,7 @@
 
 namespace Marshmallow\MarketingData\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 class StoreMarketingCookiesController
@@ -18,7 +16,7 @@ class StoreMarketingCookiesController
 
         $session_data = $request->session()->get($session_key, []);
 
-        if ($cookie_values && !empty($cookie_values)) {
+        if ($cookie_values && ! empty($cookie_values)) {
             $cookie_values = array_merge($cookie_values, $session_data ?? []);
             request()->session()->put($session_key, $cookie_values);
         }

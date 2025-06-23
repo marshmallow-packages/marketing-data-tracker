@@ -258,8 +258,17 @@ trait HasMarketingParameters
 
         $fieldValues = $fields->mapWithKeys(function ($field) use ($format) {
             if (Str::of($field)->endsWith('*')) {
-                $field = Str::of($field)->before('*')->beforeLast('_')->toString();
+                $field_group = $field;
+                $field_group = Str::of($field)->before('*')->beforeLast('_');
+                if ($field_group->isEmpty()) {
+                    $field_group = Str::of($field)->before('*');
+                }
+                if (Str::of($field_group)->startsWith('_')) {
+                    $field_group = Str::of($field_group)->after('_');
+                }
+                $field = $field_group->toString();
             }
+
             $value = $this->$field ?? null;
             if (is_array($value)) {
                 $values = collect($value)->mapWithKeys(function ($sub_value, $sub_field) use ($format) {
@@ -338,7 +347,6 @@ trait HasMarketingParameters
         $parameters = $this->all_raw_marketing_parameters;
         $cookies = $this->all_raw_marketing_cookies;
         $total = array_merge($parameters, $cookies);
-
         return $total;
     }
 

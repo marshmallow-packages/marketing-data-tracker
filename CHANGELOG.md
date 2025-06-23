@@ -2,6 +2,10 @@
 
 All notable changes to `marketing-data-tracker` will be documented in this file.
 
+## v1.1.0 - Add Cookies - 2025-06-23
+
+**Full Changelog**: https://github.com/marshmallow-packages/marketing-data-tracker/compare/v1.0.2...v1.1.0
+
 ## v1.0.2 - 2025-06-16
 
 **Full Changelog**: https://github.com/marshmallow-packages/marketing-data-tracker/compare/v1.0.1...v1.0.2

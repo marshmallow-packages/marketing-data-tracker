@@ -96,6 +96,7 @@ return [
 
     // The paths of app that should be ignored.
     'ignore_paths' => [
+        'mm-store-marketing-cookies', // The route for storing marketing cookies
         'horizon', // Laravel Horizon requests
         'telescope', // Laravel Telescope requests
         '_tt', // Laravel Telescope toolbar

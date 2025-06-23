@@ -77,7 +77,7 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
+        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
 
         return preg_match($ignore_expression, $request->path());
     }
@@ -101,9 +101,7 @@ class MarketingData
 
     public static function setCookieValues($request, $session_key)
     {
-        if (session()->has($session_key)) {
-            $session_data = session()->get($session_key);
-        }
+        $session_data = session()->get($session_key) ?? [];
 
         $cookie_data = $request->cookie();
 
@@ -155,7 +153,7 @@ class MarketingData
             if ($parameter_key === 'landing_path') {
                 $parameter_value = $request->path();
                 if (! Str::startsWith($parameter_value, '/')) {
-                    $parameter_value = '/'.$parameter_value;
+                    $parameter_value = '/' . $parameter_value;
                 }
             }
 

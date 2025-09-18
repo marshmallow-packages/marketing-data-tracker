@@ -367,7 +367,6 @@ return [
     ],
 
     // The paths of app that should be ignored.
-    // The paths of app that should be ignored.
     'ignore_paths' => [
         // Marketing tracking routes
         'mm-store-marketing-cookies', // The route for storing marketing cookies

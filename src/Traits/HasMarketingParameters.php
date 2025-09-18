@@ -16,6 +16,11 @@ trait HasMarketingParameters
         return ['gclid', 'gbraid', 'wbraid'];
     }
 
+    public function getMetaClickIdParameters(): array
+    {
+        return ['fbclid'];
+    }
+
     public function getHasMarketingParametersCasts()
     {
         $parameters = MarketingDataTracker::getMarketingDataParameters();
@@ -213,6 +218,10 @@ trait HasMarketingParameters
             'u' => 'Smart Shopping',
             'ytv' => 'Youtube',
             'vp' => 'Video Partner',
+            'fb' => 'Facebook',
+            'ig' => 'Instagram',
+            'an' => 'Audience Network',
+            'msg' => 'Messenger',
             default => $value,
         };
     }
@@ -233,6 +242,42 @@ trait HasMarketingParameters
             'e' => 'Exact',
             'p' => 'Phrase',
             'b' => 'Broad',
+            default => $value,
+        };
+    }
+
+    public function getPlacement($value)
+    {
+        return match ($value) {
+            'facebook_desktop_feed' => 'Facebook Desktop Feed',
+            'facebook_mobile_feed' => 'Facebook Mobile Feed',
+            'facebook_right_column' => 'Facebook Right Column',
+            'facebook_instant_article' => 'Facebook Instant Article',
+            'facebook_instream_video' => 'Facebook In-Stream Video',
+            'facebook_marketplace' => 'Facebook Marketplace',
+            'facebook_stories' => 'Facebook Stories',
+            'facebook_reels' => 'Facebook Reels',
+            'instagram_feed' => 'Instagram Feed',
+            'instagram_stories' => 'Instagram Stories',
+            'instagram_reels' => 'Instagram Reels',
+            'instagram_explore' => 'Instagram Explore',
+            'messenger_inbox' => 'Messenger Inbox',
+            'messenger_stories' => 'Messenger Stories',
+            'audience_network_native' => 'Audience Network Native',
+            'audience_network_banner' => 'Audience Network Banner',
+            'audience_network_interstitial' => 'Audience Network Interstitial',
+            'audience_network_rewarded_video' => 'Audience Network Rewarded Video',
+            default => Str::title(str_replace('_', ' ', $value)),
+        };
+    }
+
+    public function getSiteSourceName($value)
+    {
+        return match ($value) {
+            'fb' => 'Facebook',
+            'ig' => 'Instagram',
+            'an' => 'Audience Network',
+            'msg' => 'Messenger',
             default => $value,
         };
     }
@@ -292,6 +337,7 @@ trait HasMarketingParameters
                 'mm_matchtype' => $this->getMatchtype($value),
                 'mm_network' => $this->getNetwork($value),
                 'mm_device' => $this->getDevice($value),
+                'mm_placement' => $this->getPlacement($value),
                 default => $value,
             };
         }
@@ -366,6 +412,32 @@ trait HasMarketingParameters
         if ($this->hasGoogleId) {
             return collect($this->all_raw_marketing_list)->mapWithKeys(function ($value, $parameter) {
                 $allowed = collect($this->getGoogleClickIdParameters());
+                if ($allowed->contains($parameter)) {
+                    return [$parameter => $value];
+                }
+
+                return [];
+            })->toArray();
+        }
+
+        return [];
+    }
+
+    public function getHasMetaIdAttribute(): bool
+    {
+        return collect($this->all_raw_marketing_list)->contains(function ($value, $parameter) {
+            $allowed = collect($this->getMetaClickIdParameters());
+            if ($allowed->contains($parameter)) {
+                return true;
+            }
+        }) ?? false;
+    }
+
+    public function getMetaIdsAttribute(): array
+    {
+        if ($this->hasMetaId) {
+            return collect($this->all_raw_marketing_list)->mapWithKeys(function ($value, $parameter) {
+                $allowed = collect($this->getMetaClickIdParameters());
                 if ($allowed->contains($parameter)) {
                     return [$parameter => $value];
                 }

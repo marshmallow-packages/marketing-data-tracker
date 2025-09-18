@@ -425,8 +425,8 @@ return [
         'test', // Test endpoints
 
         // API endpoints that shouldn't track marketing
-        'api/webhooks', // Webhook endpoints
-        'api/health', // API health checks
+        'api\/webhooks', // Webhook endpoints
+        'api\/health', // API health checks
         'webhooks', // Alternative webhook path
         'cron', // Cron job endpoints
         'queue', // Queue processing

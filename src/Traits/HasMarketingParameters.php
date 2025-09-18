@@ -21,6 +21,192 @@ trait HasMarketingParameters
         return ['fbclid'];
     }
 
+    /**
+     * Get all click ID parameters for all platforms
+     */
+    public function getAllClickIdParameters(): array
+    {
+        return [
+            // Google Ads
+            'gclid', 'gbraid', 'wbraid',
+            // Facebook/Meta
+            'fbclid',
+            // Microsoft/Bing
+            'msclkid',
+            // LinkedIn
+            'li_fat_id',
+            // Twitter/X
+            'twclid',
+            // Pinterest
+            'epik',
+            // TikTok
+            'ttclid',
+            // Reddit
+            'rdt_cid',
+            // Snapchat
+            'sscid',
+        ];
+    }
+
+    /**
+     * Get click ID parameters by platform
+     */
+    public function getClickIdParametersByPlatform(): array
+    {
+        return [
+            'google_ads' => ['gclid', 'gbraid', 'wbraid'],
+            'meta' => ['fbclid'],
+            'microsoft' => ['msclkid'],
+            'linkedin' => ['li_fat_id'],
+            'twitter' => ['twclid'],
+            'pinterest' => ['epik'],
+            'tiktok' => ['ttclid'],
+            'reddit' => ['rdt_cid'],
+            'snapchat' => ['sscid'],
+        ];
+    }
+
+    /**
+     * Detect platform from click ID
+     */
+    public function detectPlatformFromClickId(string $clickId): ?string
+    {
+        $platformMappings = [
+            'gclid' => 'google_ads',
+            'gbraid' => 'google_ads',
+            'wbraid' => 'google_ads',
+            'fbclid' => 'meta',
+            'msclkid' => 'microsoft',
+            'li_fat_id' => 'linkedin',
+            'twclid' => 'twitter',
+            'epik' => 'pinterest',
+            'ttclid' => 'tiktok',
+            'rdt_cid' => 'reddit',
+            'sscid' => 'snapchat',
+        ];
+
+        return $platformMappings[$clickId] ?? null;
+    }
+
+    /**
+     * Detect platform from UTM source
+     */
+    public function detectPlatformFromUtmSource(?string $utmSource): ?string
+    {
+        if (!$utmSource) {
+            return null;
+        }
+
+        $utmSource = strtolower($utmSource);
+
+        $sourceMappings = [
+            // Google variants
+            'google' => 'google_ads',
+            'google-ads' => 'google_ads',
+            'googleads' => 'google_ads',
+            'adwords' => 'google_ads',
+
+            // Facebook/Meta variants
+            'facebook' => 'meta',
+            'facebook_ads' => 'meta',
+            'facebook-ads' => 'meta',
+            'fb' => 'meta',
+            'meta' => 'meta',
+            'instagram' => 'meta',
+            'ig' => 'meta',
+
+            // Microsoft/Bing variants
+            'bing' => 'microsoft',
+            'microsoft' => 'microsoft',
+            'bing-ads' => 'microsoft',
+            'bingads' => 'microsoft',
+            'msn' => 'microsoft',
+
+            // LinkedIn variants
+            'linkedin' => 'linkedin',
+            'linkedin_ads' => 'linkedin',
+            'li' => 'linkedin',
+
+            // Twitter/X variants
+            'twitter' => 'twitter',
+            'twitter_ads' => 'twitter',
+            'x' => 'twitter',
+            'twitterads' => 'twitter',
+
+            // Pinterest variants
+            'pinterest' => 'pinterest',
+            'pinterest_ads' => 'pinterest',
+            'pin' => 'pinterest',
+
+            // TikTok variants
+            'tiktok' => 'tiktok',
+            'tiktok_ads' => 'tiktok',
+            'tiktokads' => 'tiktok',
+            'tt' => 'tiktok',
+
+            // Reddit variants
+            'reddit' => 'reddit',
+            'reddit_ads' => 'reddit',
+
+            // Snapchat variants
+            'snapchat' => 'snapchat',
+            'snapchat_ads' => 'snapchat',
+            'snap' => 'snapchat',
+
+            // Amazon variants
+            'amazon' => 'amazon',
+            'amazon_ads' => 'amazon',
+            'dsp' => 'amazon',
+
+            // YouTube variants (separate from Google)
+            'youtube' => 'youtube',
+            'yt' => 'youtube',
+        ];
+
+        // Check exact matches first
+        if (isset($sourceMappings[$utmSource])) {
+            return $sourceMappings[$utmSource];
+        }
+
+        // Check partial matches
+        foreach ($sourceMappings as $pattern => $platform) {
+            if (str_contains($utmSource, $pattern)) {
+                return $platform;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Detect platform from marketing data
+     */
+    public function detectPlatformFromMarketingData(array $marketingData = []): ?string
+    {
+        // Use model's marketing data if no array provided
+        if (empty($marketingData) && method_exists($this, 'getAllRawMarketingParametersAttribute')) {
+            $marketingData = $this->getAllRawMarketingParametersAttribute();
+        }
+
+        // First check for click IDs (most reliable)
+        foreach ($this->getAllClickIdParameters() as $clickIdParam) {
+            if (!empty($marketingData[$clickIdParam])) {
+                $platform = $this->detectPlatformFromClickId($clickIdParam);
+                if ($platform) {
+                    return $platform;
+                }
+            }
+        }
+
+        // Then check UTM source
+        $utmSource = $marketingData['utm_source'] ?? null;
+        if ($utmSource) {
+            return $this->detectPlatformFromUtmSource($utmSource);
+        }
+
+        return null;
+    }
+
     public function getHasMarketingParametersCasts()
     {
         $parameters = MarketingDataTracker::getMarketingDataParameters();
@@ -212,17 +398,56 @@ trait HasMarketingParameters
     public function getNetwork($value)
     {
         return match ($value) {
+            // Google Ads networks
             'g' => 'Google Search',
             's' => 'Search partner',
             'd' => 'Display',
             'u' => 'Smart Shopping',
             'ytv' => 'Youtube',
             'vp' => 'Video Partner',
+
+            // Facebook/Meta networks
             'fb' => 'Facebook',
             'ig' => 'Instagram',
             'an' => 'Audience Network',
             'msg' => 'Messenger',
-            default => $value,
+
+            // Microsoft/Bing networks
+            'o' => 'Bing Search',
+            'partner' => 'Bing Partner',
+            'content' => 'Microsoft Content Network',
+            'audience' => 'Microsoft Audience Network',
+
+            // LinkedIn networks
+            'sponsored_content' => 'LinkedIn Sponsored Content',
+            'message_ads' => 'LinkedIn Message Ads',
+            'dynamic_ads' => 'LinkedIn Dynamic Ads',
+            'text_ads' => 'LinkedIn Text Ads',
+
+            // Twitter/X networks
+            'timeline' => 'Twitter Timeline',
+            'search' => 'Twitter Search',
+            'profile' => 'Twitter Profile',
+
+            // Pinterest networks
+            'browse' => 'Pinterest Browse',
+            'search_pinterest' => 'Pinterest Search',
+            'shopping' => 'Pinterest Shopping',
+
+            // TikTok networks
+            'for_you' => 'TikTok For You',
+            'following' => 'TikTok Following',
+            'discover' => 'TikTok Discover',
+
+            // Reddit networks
+            'feed' => 'Reddit Feed',
+            'conversation' => 'Reddit Conversation',
+
+            // Snapchat networks
+            'snap_ads' => 'Snapchat Ads',
+            'story_ads' => 'Snapchat Story Ads',
+
+            default => Str::title(str_replace('_', ' ', $value)),
         };
     }
 
@@ -421,6 +646,100 @@ trait HasMarketingParameters
         }
 
         return [];
+    }
+
+    /**
+     * Check if model has any click IDs from all platforms
+     */
+    public function getHasAnyClickIdAttribute(): bool
+    {
+        return collect($this->all_raw_marketing_list)->contains(function ($value, $parameter) {
+            $allowed = collect($this->getAllClickIdParameters());
+            if ($allowed->contains($parameter)) {
+                return true;
+            }
+        }) ?? false;
+    }
+
+    /**
+     * Get all click IDs from all platforms
+     */
+    public function getAllClickIdsAttribute(): array
+    {
+        if ($this->hasAnyClickId) {
+            return collect($this->all_raw_marketing_list)->mapWithKeys(function ($value, $parameter) {
+                $allowed = collect($this->getAllClickIdParameters());
+                if ($allowed->contains($parameter)) {
+                    return [$parameter => $value];
+                }
+
+                return [];
+            })->toArray();
+        }
+
+        return [];
+    }
+
+    /**
+     * Get the primary click ID from any platform (prioritized by platform importance)
+     */
+    public function getPrimaryClickIdAttribute(): ?string
+    {
+        $platformPriority = [
+            'gclid' => 10,      // Google Ads - highest priority
+            'fbclid' => 9,      // Facebook/Meta
+            'msclkid' => 8,     // Microsoft/Bing
+            'ttclid' => 7,      // TikTok
+            'twclid' => 6,      // Twitter/X
+            'li_fat_id' => 5,   // LinkedIn
+            'epik' => 4,        // Pinterest
+            'rdt_cid' => 3,     // Reddit
+            'sscid' => 2,       // Snapchat
+            'gbraid' => 1,      // Google iOS tracking
+            'wbraid' => 1,      // Google iOS web-to-app
+        ];
+
+        $allClickIds = $this->getAllClickIdsAttribute();
+
+        if (empty($allClickIds)) {
+            return null;
+        }
+
+        // Sort by priority and return the highest priority click ID
+        $sortedClickIds = collect($allClickIds)
+            ->sortByDesc(function ($value, $parameter) use ($platformPriority) {
+                return $platformPriority[$parameter] ?? 0;
+            });
+
+        $primaryParam = $sortedClickIds->keys()->first();
+        $primaryValue = $sortedClickIds->first();
+
+        // Extract clean value (handle Google cookie format)
+        return $this->extractClickIdValue($primaryValue, $primaryParam);
+    }
+
+    /**
+     * Get platform name from detected platform
+     */
+    public function getPlatformNameAttribute(): ?string
+    {
+        $platform = $this->detectPlatformFromMarketingData();
+
+        $platformNames = [
+            'google_ads' => 'Google Ads',
+            'meta' => 'Meta/Facebook',
+            'microsoft' => 'Microsoft Ads',
+            'linkedin' => 'LinkedIn',
+            'twitter' => 'Twitter/X',
+            'pinterest' => 'Pinterest',
+            'tiktok' => 'TikTok',
+            'reddit' => 'Reddit',
+            'snapchat' => 'Snapchat',
+            'amazon' => 'Amazon',
+            'youtube' => 'YouTube',
+        ];
+
+        return $platformNames[$platform] ?? $platform;
     }
 
     public function getHasMetaIdAttribute(): bool

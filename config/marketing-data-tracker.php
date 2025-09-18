@@ -22,6 +22,11 @@ return [
      */
     'marketing_data_cast' => Marshmallow\MarketingData\Casts\MarketingDataCast::class,
 
+    'tracking_urls' => [
+        'google_ads' => 'utm_source=google&utm_medium=cpc&utm_term={keyword}&utm_content={creative}&mm_campaignid={campaignid}&mm_adgroupid={adgroupid}&mm_feedid={feeditemid}&mm_position={adposition}&mm_linterest={loc_interest_ms}&mm_lphys={loc_physical_ms}&mm_matchtype={matchtype}&mm_network={network}&mm_device={device}&mm_devicemodel={devicemodel}&mm_creative={creative}&mm_keyword={keyword}&mm_placement={placement}&mm_targetid={targetid}&mm_random={random}&mm_aceid={aceid}&mm_version=G3&gclid={gclid}&utm_campaign={_campaign}&gad_source=1&gad_campaignid={campaignid}&gbraid={gbraid}&wbraid={wbraid}',
+        'meta_ads' => '',
+    ],
+
     /*
      * The parameters that should be stored.
      */
@@ -47,11 +52,14 @@ return [
         'mm_placement',
         'mm_targetid',
         'mm_version',
+        'mm_random',
+        'mm_aceid',
         'tradetracker',
         'gclid',
         'gbraid',
         'wbraid',
         'gad_source',
+        'gad_campaignid',
         'gad_medium',
         'landing_url',
         'landing_full_url',
@@ -65,9 +73,23 @@ return [
     ],
 
     'store_marketing_cookies' => [
-        '_fbp',
-        '_ga*',
-        '_gcl*',
+        '_fbp', // Facebook
+        'fbp', // Facebook
+        'fbc', // Facebook
+        '_ga', // Google Analytics
+        '_gcl_au',
+        '_gcl_aw', // Google Ads click identifier
+        '_gcl_gs',
+        '_gcl_ag', // Google Ads gbraid
+        '_gcl_gb', // Google Ads wbraid
+        '_uetsid',
+        '_uetvid',
+        'ajs_anonymous_id', // Segment
+        '_epik', // Pinterest
+        '_ttp', // TikTok
+        'ttclid', // TikTok click
+        '_ga*', // Google Analytics session ID
+        '_gcl*', // Google Ads IDs
     ],
 
     /*
@@ -101,9 +123,28 @@ return [
         'telescope', // Laravel Telescope requests
         '_tt', // Laravel Telescope toolbar
         '_debugbar', // Laravel DebugBar requests
-        'media', // Spatie Media requests
-        'nova-api', // Nova Scripts requests
+        'media', // Media requests
+        'nova-api', // Nova API requests
         'storage', // Nova styles requests
         'livewire', // Livewire requests
+        'boost', // Laravel Boost requests
+        '__clockwork', // Clockwork requests
+        '_boost', // Laravel Boost requests
+        'pulse', // Laravel Pulse requests
+        'flux', // Flux requests
+        'herd', // Herd profile requests
+        'storage', // Storage requests
+        'nova-vendor', // Nova vendor requests
+        'sanctum', // Laravel Sanctum requests
+        'oauth', // Laravel Passport requests
+        'health', // Health check endpoint
+        'ping', // Ping endpoint
+        'status', // Status endpoint
+        'up', // Up endpoint
+        'broadcasting', // Broadcasting requests
+        'pusher', // Pusher requests
+        'password', // Password reset requests
+        'dusk', // Laravel Dusk requests
+        'octane', // Laravel Octane requests
     ],
 ];

@@ -11,22 +11,22 @@ trait HasMarketingData
 {
     protected array $queuedMarketingData = [];
 
-    public static function bootHasMarketingData()
+    public static function bootHasMarketingData(): void
     {
-        static::created(function (Model $marketing_datableModel) {
+        static::created(function (Model $marketing_datableModel): void {
             if (count($marketing_datableModel->queuedMarketingData) === 0) {
                 return;
             }
 
-            DB::afterCommit(function () use ($marketing_datableModel) {
-                collect($marketing_datableModel->queuedMarketingData)->each(function ($value, $key) use ($marketing_datableModel) {
+            DB::afterCommit(function () use ($marketing_datableModel): void {
+                collect($marketing_datableModel->queuedMarketingData)->each(function ($value, $key) use ($marketing_datableModel): void {
                     $marketing_datableModel->setMarketingData($key, $value);
                 });
                 $marketing_datableModel->queuedMarketingData = [];
             });
         });
 
-        static::deleted(function (Model $deletedModel) {
+        static::deleted(function (Model $deletedModel): void {
             $deletedModel->marketing_data()->delete();
         });
     }
@@ -57,7 +57,7 @@ trait HasMarketingData
     {
         $encoded_value = $this->maybeEncodeMarketingDataValue($value);
 
-        if (! $this->exists) {
+        if (!$this->exists) {
             $this->queuedMarketingData[$key] = $encoded_value;
 
             return;
@@ -75,7 +75,7 @@ trait HasMarketingData
 
     public function getMarketingData($key)
     {
-        if (! in_array($key, $this->getMarketingDataCasts())) {
+        if (!in_array($key, $this->getMarketingDataCasts())) {
             return null;
         }
 

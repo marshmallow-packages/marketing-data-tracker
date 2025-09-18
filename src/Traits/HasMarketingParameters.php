@@ -2,6 +2,7 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
+use Exception;
 use Illuminate\Support\Str;
 use Marshmallow\MarketingData\Casts\MarketingDataCast;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
@@ -97,7 +98,7 @@ trait HasMarketingParameters
             return null;
         }
 
-        $utmSource = strtolower($utmSource);
+        $utmSource = mb_strtolower($utmSource);
 
         $sourceMappings = [
             // Google variants
@@ -224,23 +225,23 @@ trait HasMarketingParameters
             return [$cast => MarketingDataCast::class];
         });
 
-        $casts->each(function ($class, $cast) use (&$casts) {
+        $casts->each(function ($class, $cast) use (&$casts): void {
             if (Str::endsWith($cast, '_*')) {
                 $cast = Str::before($cast, '_*');
                 $casts[$cast] = MarketingDataCast::class;
             }
         });
 
-        $casts->each(function ($class, $cast) use (&$casts) {
+        $casts->each(function ($class, $cast) use (&$casts): void {
             if (Str::endsWith($cast, '*')) {
                 $cast = Str::before($cast, '*');
                 $casts[$cast] = MarketingDataCast::class;
             }
         });
 
-        $casts->each(function ($class, $cast) use (&$casts) {
+        $casts->each(function ($class, $cast) use (&$casts): void {
             $field = Str::of($cast)->trim()->toString();
-            if (! Str::of($field)->endsWith('*')) {
+            if (!Str::of($field)->endsWith('*')) {
                 return;
             }
             $cast = Str::of($field)->before('*')->beforeLast('_');
@@ -261,20 +262,20 @@ trait HasMarketingParameters
         return $casts;
     }
 
-    public function setUtmSourceData($forget = true)
+    public function setUtmSourceData($forget = true): void
     {
         try {
             $this->addUtmSessionData($forget);
             $this->addSourceData($forget);
             $this->addCookieData($forget);
-        } catch (\Exception $exception) {
-            throw new \Exception('Error setting Marketing data: '.$exception->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception('Error setting Marketing data: '.$exception->getMessage());
         }
     }
 
-    public function addCookieData($forget = true, $request = null)
+    public function addCookieData($forget = true, $request = null): void
     {
-        if (! $request) {
+        if (!$request) {
             $request = request();
         }
 
@@ -289,21 +290,21 @@ trait HasMarketingParameters
 
             $allowed_parameters = MarketingDataTracker::getMarketingDataCookies();
 
-            if (is_array($source_values) && ! empty($source_values)) {
+            if (is_array($source_values) && !empty($source_values)) {
                 foreach ($source_values as $key => $value) {
-                    if (! in_array($key, $allowed_parameters)) {
+                    if (!in_array($key, $allowed_parameters)) {
                         continue;
                     }
-                    $this->$key = $value;
+                    $this->{$key} = $value;
                 }
                 $this->updateQuietly($source_values);
             }
         }
     }
 
-    public function addSourceData($forget = true, $request = null)
+    public function addSourceData($forget = true, $request = null): void
     {
-        if (! $request) {
+        if (!$request) {
             $request = request();
         }
 
@@ -318,19 +319,19 @@ trait HasMarketingParameters
 
             $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
 
-            if (is_array($source_values) && ! empty($source_values)) {
+            if (is_array($source_values) && !empty($source_values)) {
                 foreach ($source_values as $key => $value) {
-                    if (! in_array($key, $allowed_parameters)) {
+                    if (!in_array($key, $allowed_parameters)) {
                         continue;
                     }
-                    $this->$key = $value;
+                    $this->{$key} = $value;
                 }
                 $this->updateQuietly($source_values);
             }
         }
     }
 
-    public function addUtmSessionData($forget = true)
+    public function addUtmSessionData($forget = true): void
     {
         $session_key = 'mm_utm_values';
         if (session()->has($session_key)) {
@@ -342,12 +343,12 @@ trait HasMarketingParameters
 
             $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
 
-            if (is_array($utm_values) && ! empty($utm_values)) {
+            if (is_array($utm_values) && !empty($utm_values)) {
                 foreach ($utm_values as $key => $value) {
-                    if (! in_array($key, $allowed_parameters)) {
+                    if (!in_array($key, $allowed_parameters)) {
                         continue;
                     }
-                    $this->$key = $value;
+                    $this->{$key} = $value;
                 }
 
                 $this->updateQuietly($utm_values);
@@ -520,7 +521,7 @@ trait HasMarketingParameters
         }
         $fields = collect($allowed_parameters)->values();
 
-        if (! $include_hidden) {
+        if (!$include_hidden) {
             $fields = $fields->reject(function ($field) {
                 return $this->hideFields()->contains($field);
             });
@@ -539,7 +540,7 @@ trait HasMarketingParameters
                 $field = $field_group->toString();
             }
 
-            $value = $this->$field ?? null;
+            $value = $this->{$field} ?? null;
             if (is_array($value)) {
                 $values = collect($value)->mapWithKeys(function ($sub_value, $sub_field) use ($format) {
                     return $this->parseFieldValue($sub_field, $sub_value, $format);
@@ -567,7 +568,7 @@ trait HasMarketingParameters
             };
         }
 
-        if (! $value) {
+        if (!$value) {
             return [];
         }
 

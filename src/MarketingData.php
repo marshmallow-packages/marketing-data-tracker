@@ -66,18 +66,14 @@ class MarketingData
             return true;
         }
 
-        if (self::shouldIgnorePath($request)) {
-            return true;
-        }
-
-        return false;
+        return (bool) (self::shouldIgnorePath($request));
     }
 
     public static function shouldIgnorePath($request)
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
+        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
 
         return preg_match($ignore_expression, $request->path());
     }
@@ -99,7 +95,7 @@ class MarketingData
         return $parameter_values_set;
     }
 
-    public static function setCookieValues($request, $session_key)
+    public static function setCookieValues($request, $session_key): void
     {
         $session_data = session()->get($session_key) ?? [];
 
@@ -107,7 +103,7 @@ class MarketingData
 
         $cookie_values = self::getCookieValues($cookie_data);
 
-        if ($cookie_values && ! empty($cookie_values)) {
+        if ($cookie_values && !empty($cookie_values)) {
             $cookie_values = array_merge($session_data, $cookie_values ?? []);
             $request->session()->put($session_key, $cookie_values);
         }
@@ -127,7 +123,7 @@ class MarketingData
         return $cookie_value_set;
     }
 
-    public static function setUtmValues($request, $session_key)
+    public static function setUtmValues($request, $session_key): void
     {
         if (session()->has($session_key)) {
             $session_data = session()->get($session_key);
@@ -136,7 +132,8 @@ class MarketingData
             $gclid_request = $request->input('gclid', null);
             if ($gclid_request && $gclid_request == $gclid) {
                 return;
-            } elseif ($gclid || $session_data || $utm_source) {
+            }
+            if ($gclid || $session_data || $utm_source) {
                 return;
             }
         }
@@ -152,8 +149,8 @@ class MarketingData
 
             if ($parameter_key === 'landing_path') {
                 $parameter_value = $request->path();
-                if (! Str::startsWith($parameter_value, '/')) {
-                    $parameter_value = '/' . $parameter_value;
+                if (!Str::startsWith($parameter_value, '/')) {
+                    $parameter_value = '/'.$parameter_value;
                 }
             }
 
@@ -163,17 +160,17 @@ class MarketingData
 
             return [$parameter_key => $parameter_value];
         })->reject(function ($parameter_value) {
-            return is_null($parameter_value);
+            return null === $parameter_value;
         })->toArray();
 
-        if ($parameter_values && ! empty($parameter_values)) {
+        if ($parameter_values && !empty($parameter_values)) {
             $request->session()->put($session_key, $parameter_values);
         }
     }
 
-    public static function setSourceValues($request, $session_key)
+    public static function setSourceValues($request, $session_key): void
     {
-        if (! session()->has($session_key)) {
+        if (!session()->has($session_key)) {
             $intended_url = session()->get('url.intended');
             $source_url = $request->fullUrl(); // This is the landing page WITH marketing parameters
 
@@ -198,7 +195,7 @@ class MarketingData
                     ->toString();
 
                 if (!Str::startsWith($source_path, '/')) {
-                    $source_path = '/' . $source_path;
+                    $source_path = '/'.$source_path;
                 }
             }
 
@@ -214,7 +211,7 @@ class MarketingData
         $source_parameters['request_url'] = $request->url();
         $source_parameters['referer_url'] = $request->server('HTTP_REFERER');
 
-        if ($source_parameters && ! empty($source_parameters)) {
+        if ($source_parameters && !empty($source_parameters)) {
             $request->session()->put($session_key, $source_parameters);
         }
     }
@@ -255,9 +252,9 @@ class MarketingData
                     return [$matching_key => $marketing_value];
                 });
 
-                if (! $keep_empty_keys) {
+                if (!$keep_empty_keys) {
                     $matching_keys = $matching_keys->reject(function ($marketing_value, $marketing_key) {
-                        return is_null($marketing_value);
+                        return null === $marketing_value;
                     });
                 }
 
@@ -277,9 +274,9 @@ class MarketingData
             return [$marketing_key => $marketing_value];
         });
 
-        if (! $keep_empty_keys) {
+        if (!$keep_empty_keys) {
             $marketing_values = $marketing_values->reject(function ($marketing_value, $marketing_key) {
-                return is_null($marketing_value);
+                return null === $marketing_value;
             });
         }
 

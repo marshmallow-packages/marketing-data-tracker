@@ -77,7 +77,7 @@ class MarketingData
     {
         $ignored_list = config('marketing-data-tracker.ignore_paths', []);
 
-        $ignore_expression = '/^(?:'.implode('|', $ignored_list).').*/';
+        $ignore_expression = '/^(?:' . implode('|', $ignored_list) . ').*/';
 
         return preg_match($ignore_expression, $request->path());
     }
@@ -153,7 +153,7 @@ class MarketingData
             if ($parameter_key === 'landing_path') {
                 $parameter_value = $request->path();
                 if (! Str::startsWith($parameter_value, '/')) {
-                    $parameter_value = '/'.$parameter_value;
+                    $parameter_value = '/' . $parameter_value;
                 }
             }
 
@@ -175,16 +175,18 @@ class MarketingData
     {
         if (! session()->has($session_key)) {
             $intended_url = session()->get('url.intended');
-            $source_url = $request->server('HTTP_REFERER');
+            $source_url = $request->fullUrl(); // This is the landing page WITH marketing parameters
 
-            if (Str::of($source_url)->contains([
-                'livewire',
-                'oauth',
-                'password',
-                'reset',
-                'apple.com',
-            ]) && $intended_url) {
-                $source_url = $intended_url;
+            // Only use intended URL if there was a redirect and the current URL doesn't have marketing params
+            if ($intended_url && !$request->hasAny(['utm_source', 'gclid', 'fbclid', 'ttclid', 'msclkid'])) {
+                // Check if intended URL has marketing parameters
+                $parsedIntended = parse_url($intended_url);
+                if (isset($parsedIntended['query'])) {
+                    parse_str($parsedIntended['query'], $intendedParams);
+                    if (array_intersect_key($intendedParams, array_flip(['utm_source', 'gclid', 'fbclid', 'ttclid', 'msclkid']))) {
+                        $source_url = $intended_url;
+                    }
+                }
             }
 
             $source_path = null;
@@ -194,6 +196,10 @@ class MarketingData
                     ->before('?')
                     ->after($app_url)
                     ->toString();
+
+                if (!Str::startsWith($source_path, '/')) {
+                    $source_path = '/' . $source_path;
+                }
             }
 
             $source_parameters = [

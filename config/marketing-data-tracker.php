@@ -157,14 +157,14 @@ return [
         'list_id',
 
         // General tracking parameters
-        'landing_url',
-        'landing_full_url',
-        'landing_path',
-        'source_url',
-        'source_path',
-        'previous_url',
-        'request_url',
-        'referer_url',
+        'landing_url',      // Landing page URL (without query parameters)
+        'landing_full_url', // Landing page URL (with all query parameters)
+        'landing_path',     // Landing page path (without domain)
+        'source_url',       // Source URL (landing page with marketing parameters)
+        'source_path',      // Source path (landing page path with marketing parameters)
+        'previous_url',     // Previous page URL from Laravel session
+        'request_url',      // Current request URL (without query parameters)
+        'referer_url',      // HTTP referer (where user came from)
 
         // Catch-all patterns
         'gad_*', // Google Ads parameters
@@ -354,12 +354,12 @@ return [
         'ttclid',
 
         // URL tracking (internal use)
-        'landing_full_url',
-        'landing_path',
-        'source_path',
-        'source_url',
-        'previous_url',
-        'request_url',
+        'landing_full_url', // Landing page URL (with all query parameters)
+        'landing_path',     // Landing page path (without domain)
+        'source_path',      // Source path (landing page path with marketing parameters)
+        'source_url',       // Source URL (landing page with marketing parameters)
+        'previous_url',     // Previous page URL from Laravel session
+        'request_url',      // Current request URL (without query parameters)
         'affiliate_id',
         'partner_id',
         'source_id',

@@ -24,7 +24,7 @@ return [
 
     'tracking_urls' => [
         'google_ads' => 'utm_source=google&utm_medium=cpc&utm_term={keyword}&utm_content={creative}&mm_campaignid={campaignid}&mm_adgroupid={adgroupid}&mm_feedid={feeditemid}&mm_position={adposition}&mm_linterest={loc_interest_ms}&mm_lphys={loc_physical_ms}&mm_matchtype={matchtype}&mm_network={network}&mm_device={device}&mm_devicemodel={devicemodel}&mm_creative={creative}&mm_keyword={keyword}&mm_placement={placement}&mm_targetid={targetid}&mm_random={random}&mm_aceid={aceid}&mm_version=G3&gclid={gclid}&utm_campaign={_campaign}&gad_source=1&gad_campaignid={campaignid}&gbraid={gbraid}&wbraid={wbraid}',
-        'meta_ads' => 'utm_source=facebook_ads&utm_medium={{site_source_name}}&utm_campaign={{campaign.name}}&utm_content={{ad.name}}',
+        'meta_ads' => 'utm_source=facebook&utm_medium=cpc&utm_campaign={{campaign.name}}&utm_content={{ad.name}}&utm_term={{adset.name}}&mm_campaignid={{campaign.id}}&mm_adgroupid={{adset.id}}&mm_creative={{ad.id}}&mm_network={{site_source_name}}&mm_placement={{placement}}&mm_version=FB1&fbclid={{fbclid}}',
     ],
 
     /*
@@ -58,6 +58,7 @@ return [
         'gclid',
         'gbraid',
         'wbraid',
+        'fbclid',
         'gad_source',
         'gad_campaignid',
         'gad_medium',
@@ -107,6 +108,7 @@ return [
         'gclid',
         'gbraid',
         'wbraid',
+        'fbclid',
         'gad',
         'landing_full_url',
         'landing_path',

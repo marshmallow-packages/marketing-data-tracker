@@ -24,6 +24,7 @@ class ConversionTracked extends MarketingDataEvent
     public function getDescription(): string
     {
         $value = $this->conversionValue ? " worth {$this->conversionValue} {$this->conversionCurrency}" : '';
+
         return "Conversion '{$this->conversionType}' tracked for {$this->getModelClass()} with ID {$this->getModelId()}{$value}";
     }
 
@@ -119,6 +120,7 @@ class ConversionTracked extends MarketingDataEvent
     public function getConversionPriority(): int
     {
         $conversionTypes = config('marketing-data-tracker.conversions.types', []);
+
         return $conversionTypes[$this->conversionType]['priority'] ?? 0;
     }
 
@@ -128,6 +130,7 @@ class ConversionTracked extends MarketingDataEvent
     public function isHighValue(): bool
     {
         $threshold = $this->parameters['high_value_threshold'] ?? 100;
+
         return $this->hasValue() && $this->conversionValue >= $threshold;
     }
 

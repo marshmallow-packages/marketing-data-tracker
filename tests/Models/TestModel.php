@@ -2,12 +2,13 @@
 
 namespace Marshmallow\MarketingData\Tests\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
+use Marshmallow\MarketingData\Contracts\ConversionTrackable;
+use Marshmallow\MarketingData\Contracts\ProductTrackable;
 use Marshmallow\MarketingData\Traits\HasMarketingParameters;
 use Marshmallow\MarketingData\Traits\TracksConversions;
 use Marshmallow\MarketingData\Traits\TracksEcommerceEvents;
-use Marshmallow\MarketingData\Contracts\ConversionTrackable;
-use Marshmallow\MarketingData\Contracts\ProductTrackable;
 
 class TestModel extends Model implements ConversionTrackable, ProductTrackable
 {
@@ -54,9 +55,9 @@ class TestModel extends Model implements ConversionTrackable, ProductTrackable
         return 'EUR';
     }
 
-    public function getConversionTimestamp(): ?\DateTime
+    public function getConversionTimestamp(): ?DateTime
     {
-        return new \DateTime();
+        return new DateTime;
     }
 
     /**

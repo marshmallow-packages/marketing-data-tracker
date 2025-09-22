@@ -707,11 +707,12 @@ trait HasMarketingParameters
 
             $value = $cookieValue ?? $sessionValue;
 
-            if ($value && !empty(trim($value))) {
+            if ($value && !empty(mb_trim($value))) {
                 // Special handling for gclid extraction
                 if ($key === 'gclid' && $extractGclidValue && str_contains($value, '.')) {
-                    $value = substr($value, strrpos($value, '.') + 1);
+                    $value = mb_substr($value, mb_strrpos($value, '.') + 1);
                 }
+
                 return $value;
             }
         }
@@ -771,10 +772,10 @@ trait HasMarketingParameters
         $extractGclidValue = $config['extract_gclid_value'] ?? true;
 
         if ($parameter === 'gclid' && $extractGclidValue && str_contains($value, '.')) {
-            return substr($value, strrpos($value, '.') + 1);
+            return mb_substr($value, mb_strrpos($value, '.') + 1);
         }
 
-        return trim($value);
+        return mb_trim($value);
     }
 
     /**

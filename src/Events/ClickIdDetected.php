@@ -22,6 +22,7 @@ class ClickIdDetected extends MarketingDataEvent
     public function getDescription(): string
     {
         $platform = $this->platform ? " from {$this->platform}" : '';
+
         return "Click ID '{$this->clickIdType}' detected for {$this->getModelClass()} with ID {$this->getModelId()}{$platform}";
     }
 
@@ -92,6 +93,7 @@ class ClickIdDetected extends MarketingDataEvent
     public function getClickIdPriority(): int
     {
         $priorities = config('marketing-data-tracker.click_id_management.platform_priority', []);
+
         return $priorities[$this->clickIdType] ?? 0;
     }
 
@@ -132,11 +134,11 @@ class ClickIdDetected extends MarketingDataEvent
             $extractValue = $config['extract_gclid_value'] ?? true;
 
             if ($extractValue && $this->clickIdType === 'gclid' && str_contains($clickId, '.')) {
-                $clickId = substr($clickId, strrpos($clickId, '.') + 1);
+                $clickId = mb_substr($clickId, mb_strrpos($clickId, '.') + 1);
             }
         }
 
-        return trim($clickId);
+        return mb_trim($clickId);
     }
 
     /**

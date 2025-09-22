@@ -2,6 +2,7 @@
 
 namespace Marshmallow\MarketingData\Events;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -101,9 +102,9 @@ abstract class MarketingDataEvent
     /**
      * Get event timestamp
      */
-    public function getTimestamp(): \DateTime
+    public function getTimestamp(): DateTime
     {
-        return new \DateTime();
+        return new DateTime;
     }
 
     /**

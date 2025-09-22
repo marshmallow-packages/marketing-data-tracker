@@ -2,12 +2,13 @@
 
 namespace Marshmallow\MarketingData;
 
+use Exception;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Blade;
+use Marshmallow\MarketingData\Services\CookieManager;
+use Marshmallow\MarketingData\Services\PlatformManager;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Marshmallow\MarketingData\Services\PlatformManager;
-use Marshmallow\MarketingData\Services\CookieManager;
 
 class MarketingDataServiceProvider extends PackageServiceProvider
 {
@@ -56,7 +57,7 @@ class MarketingDataServiceProvider extends PackageServiceProvider
         }
 
         // Automatically add them to EncryptCookies exceptions when middleware is resolved
-        $this->app->resolving(EncryptCookies::class, function ($middleware) use ($marketingCookies) {
+        $this->app->resolving(EncryptCookies::class, function ($middleware) use ($marketingCookies): void {
             $middleware->disableFor($marketingCookies);
         });
     }
@@ -68,7 +69,7 @@ class MarketingDataServiceProvider extends PackageServiceProvider
     {
         try {
             // Get cookies from platform configurations
-            $platformManager = new PlatformManager();
+            $platformManager = new PlatformManager;
             $platformCookies = $platformManager->getAllTrackingCookies();
 
             // Get legacy cookies from old configuration
@@ -85,7 +86,7 @@ class MarketingDataServiceProvider extends PackageServiceProvider
             $allCookies = array_merge($platformCookies, $legacyCookies, $cookieManagerCookies);
 
             return array_unique($allCookies);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Fail silently if there are any configuration issues
             return [];
         }

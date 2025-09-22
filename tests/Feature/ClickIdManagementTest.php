@@ -2,7 +2,7 @@
 
 use Marshmallow\MarketingData\Tests\Models\TestModel;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Set up test configuration
     config([
         'marketing-data-tracker.click_id_management' => [
@@ -34,8 +34,8 @@ beforeEach(function () {
     ]);
 });
 
-it('gets primary google click id with gclid priority', function () {
-    $model = new TestModel();
+it('gets primary google click id with gclid priority', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'test_gclid_123',
         'gbraid' => 'test_gbraid_456',
@@ -47,8 +47,8 @@ it('gets primary google click id with gclid priority', function () {
     expect($primaryId)->toBe('test_gclid_123');
 });
 
-it('gets primary google click id with wbraid when no gclid', function () {
-    $model = new TestModel();
+it('gets primary google click id with wbraid when no gclid', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gbraid' => 'test_gbraid_456',
         'wbraid' => 'test_wbraid_789',
@@ -59,8 +59,8 @@ it('gets primary google click id with wbraid when no gclid', function () {
     expect($primaryId)->toBe('test_wbraid_789');
 });
 
-it('gets primary google click id with gbraid when only available', function () {
-    $model = new TestModel();
+it('gets primary google click id with gbraid when only available', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gbraid' => 'test_gbraid_456',
     ]);
@@ -70,8 +70,8 @@ it('gets primary google click id with gbraid when only available', function () {
     expect($primaryId)->toBe('test_gbraid_456');
 });
 
-it('extracts gclid value from cookie format', function () {
-    $model = new TestModel();
+it('extracts gclid value from cookie format', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'GA1.1.123456789.1234567890.test_gclid_value',
     ]);
@@ -81,10 +81,10 @@ it('extracts gclid value from cookie format', function () {
     expect($primaryId)->toBe('test_gclid_value');
 });
 
-it('does not extract gclid when disabled', function () {
+it('does not extract gclid when disabled', function (): void {
     config(['marketing-data-tracker.click_id_management.google_click_ids.extract_gclid_value' => false]);
 
-    $model = new TestModel();
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'GA1.1.123456789.1234567890.test_gclid_value',
     ]);
@@ -94,8 +94,8 @@ it('does not extract gclid when disabled', function () {
     expect($primaryId)->toBe('GA1.1.123456789.1234567890.test_gclid_value');
 });
 
-it('prefers cookie value over session value', function () {
-    $model = new TestModel();
+it('prefers cookie value over session value', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'session_gclid',
         '_gcl_aw' => 'cookie_gclid',
@@ -106,10 +106,10 @@ it('prefers cookie value over session value', function () {
     expect($primaryId)->toBe('cookie_gclid');
 });
 
-it('returns null when google click ids disabled', function () {
+it('returns null when google click ids disabled', function (): void {
     config(['marketing-data-tracker.click_id_management.google_click_ids.enabled' => false]);
 
-    $model = new TestModel();
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'test_gclid_123',
     ]);
@@ -119,8 +119,8 @@ it('returns null when google click ids disabled', function () {
     expect($primaryId)->toBeNull();
 });
 
-it('returns null when no google click ids present', function () {
-    $model = new TestModel();
+it('returns null when no google click ids present', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'fbclid' => 'test_fbclid_123',
         'utm_source' => 'facebook',
@@ -131,8 +131,8 @@ it('returns null when no google click ids present', function () {
     expect($primaryId)->toBeNull();
 });
 
-it('gets primary click id with platform priority', function () {
-    $model = new TestModel();
+it('gets primary click id with platform priority', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'fbclid' => 'test_fbclid_123',
         'msclkid' => 'test_msclkid_456',
@@ -144,8 +144,8 @@ it('gets primary click id with platform priority', function () {
     expect($primaryId)->toBe('test_fbclid_123'); // fbclid has priority 9, highest
 });
 
-it('gets primary click id gclid highest priority', function () {
-    $model = new TestModel();
+it('gets primary click id gclid highest priority', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'test_gclid_123',
         'fbclid' => 'test_fbclid_456',
@@ -157,8 +157,8 @@ it('gets primary click id gclid highest priority', function () {
     expect($primaryId)->toBe('test_gclid_123'); // gclid has priority 10, highest
 });
 
-it('extracts click id value with google cookie format', function () {
-    $model = new TestModel();
+it('extracts click id value with google cookie format', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'GA1.1.123456789.1234567890.extracted_value',
     ]);
@@ -168,8 +168,8 @@ it('extracts click id value with google cookie format', function () {
     expect($primaryId)->toBe('extracted_value');
 });
 
-it('does not extract non google click ids', function () {
-    $model = new TestModel();
+it('does not extract non google click ids', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'fbclid' => 'FB.1.123456789.test_value',
     ]);
@@ -179,8 +179,8 @@ it('does not extract non google click ids', function () {
     expect($primaryId)->toBe('FB.1.123456789.test_value'); // No extraction for Facebook
 });
 
-it('returns null primary click id when none present', function () {
-    $model = new TestModel();
+it('returns null primary click id when none present', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'utm_source' => 'google',
         'utm_campaign' => 'test',
@@ -191,8 +191,8 @@ it('returns null primary click id when none present', function () {
     expect($primaryId)->toBeNull();
 });
 
-it('gets all click ids attribute', function () {
-    $model = new TestModel();
+it('gets all click ids attribute', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'test_gclid',
         'fbclid' => 'test_fbclid',
@@ -208,28 +208,28 @@ it('gets all click ids attribute', function () {
         ->and($clickIds['fbclid'])->toBe('test_fbclid');
 });
 
-it('has any click id attribute', function () {
-    $modelWithClickIds = new TestModel();
+it('has any click id attribute', function (): void {
+    $modelWithClickIds = new TestModel;
     $modelWithClickIds->setMarketingData(['gclid' => 'test_gclid']);
 
-    $modelWithoutClickIds = new TestModel();
+    $modelWithoutClickIds = new TestModel;
     $modelWithoutClickIds->setMarketingData(['utm_source' => 'google']);
 
     expect($modelWithClickIds->has_any_click_id)->toBeTrue()
         ->and($modelWithoutClickIds->has_any_click_id)->toBeFalse();
 });
 
-it('custom priority configuration', function () {
+it('custom priority configuration', function (): void {
     // Test custom priority order
     config([
         'marketing-data-tracker.click_id_management.platform_priority' => [
             'ttclid' => 10, // TikTok highest
             'gclid' => 9,   // Google second
             'fbclid' => 8,  // Facebook third
-        ]
+        ],
     ]);
 
-    $model = new TestModel();
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => 'test_gclid',
         'fbclid' => 'test_fbclid',
@@ -241,8 +241,8 @@ it('custom priority configuration', function () {
     expect($primaryId)->toBe('test_ttclid'); // TikTok should win with custom priority
 });
 
-it('trims whitespace from click ids', function () {
-    $model = new TestModel();
+it('trims whitespace from click ids', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => '  test_gclid_with_whitespace  ',
     ]);
@@ -252,8 +252,8 @@ it('trims whitespace from click ids', function () {
     expect($primaryId)->toBe('test_gclid_with_whitespace');
 });
 
-it('ignores empty click id values', function () {
-    $model = new TestModel();
+it('ignores empty click id values', function (): void {
+    $model = new TestModel;
     $model->setMarketingData([
         'gclid' => '',
         'wbraid' => '   ', // Just whitespace

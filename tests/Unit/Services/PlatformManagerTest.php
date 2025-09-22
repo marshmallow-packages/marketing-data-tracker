@@ -2,21 +2,21 @@
 
 use Marshmallow\MarketingData\Services\PlatformManager;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Note: We create new instances in tests after config changes
-    $this->platformManager = new PlatformManager();
+    $this->platformManager = new PlatformManager;
 });
 
-it('can get enabled platforms', function () {
+it('can get enabled platforms', function (): void {
     config([
         'marketing-data-tracker.platforms' => [
             'google_ads' => ['enabled' => true, 'name' => 'Google Ads'],
             'meta' => ['enabled' => false, 'name' => 'Meta'],
             'microsoft' => ['enabled' => true, 'name' => 'Microsoft Ads'],
-        ]
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $enabled = $platformManager->getEnabledPlatforms();
 
     expect($enabled)->toHaveKey('google_ads')
@@ -24,31 +24,31 @@ it('can get enabled platforms', function () {
         ->and($enabled)->not->toHaveKey('meta');
 });
 
-it('can check if platform is enabled', function () {
+it('can check if platform is enabled', function (): void {
     config([
         'marketing-data-tracker.platforms.google_ads' => ['enabled' => true],
         'marketing-data-tracker.platforms.meta' => ['enabled' => false],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     expect($platformManager->isPlatformEnabled('google_ads'))->toBeTrue()
         ->and($platformManager->isPlatformEnabled('meta'))->toBeFalse()
         ->and($platformManager->isPlatformEnabled('nonexistent'))->toBeFalse();
 });
 
-it('can get platform parameters', function () {
+it('can get platform parameters', function (): void {
     config([
         'marketing-data-tracker.platforms.google_ads' => [
             'enabled' => true,
-            'parameters' => ['gclid', 'gbraid', 'mm_campaignid']
+            'parameters' => ['gclid', 'gbraid', 'mm_campaignid'],
         ],
         'marketing-data-tracker.platforms.meta' => [
             'enabled' => false,
-            'parameters' => ['fbclid']
-        ]
+            'parameters' => ['fbclid'],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $googleParams = $platformManager->getPlatformParameters('google_ads');
     $metaParams = $platformManager->getPlatformParameters('meta');
 
@@ -56,44 +56,44 @@ it('can get platform parameters', function () {
         ->and($metaParams)->toBe([]); // Disabled platform returns empty
 });
 
-it('can get platform cookies', function () {
+it('can get platform cookies', function (): void {
     config([
         'marketing-data-tracker.platforms.google_ads' => [
             'enabled' => true,
-            'cookies' => ['_ga', '_gcl_aw', '_ga*']
-        ]
+            'cookies' => ['_ga', '_gcl_aw', '_ga*'],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $cookies = $platformManager->getPlatformCookies('google_ads');
 
     expect($cookies)->toBe(['_ga', '_gcl_aw', '_ga*']);
 });
 
-it('can get all tracking parameters', function () {
+it('can get all tracking parameters', function (): void {
     config([
         'marketing-data-tracker.platforms' => [
             'google_ads' => [
                 'enabled' => true,
-                'parameters' => ['gclid', 'gbraid']
+                'parameters' => ['gclid', 'gbraid'],
             ],
             'meta' => [
                 'enabled' => true,
-                'parameters' => ['fbclid']
+                'parameters' => ['fbclid'],
             ],
             'microsoft' => [
                 'enabled' => false,
-                'parameters' => ['msclkid']
-            ]
+                'parameters' => ['msclkid'],
+            ],
         ],
         'marketing-data-tracker.wildcard_patterns' => [
             'enabled' => true,
-            'parameter_patterns' => ['utm_*', 'mm_*']
-        ]
+            'parameter_patterns' => ['utm_*', 'mm_*'],
+        ],
     ]);
 
     // Create a new instance after config changes
-    $platformManager = new \Marshmallow\MarketingData\Services\PlatformManager();
+    $platformManager = new \Marshmallow\MarketingData\Services\PlatformManager;
     $allParams = $platformManager->getAllTrackingParameters();
 
     expect($allParams)->toContain('gclid')
@@ -104,10 +104,10 @@ it('can get all tracking parameters', function () {
         ->and($allParams)->toContain('mm_*');
 });
 
-it('can match wildcard patterns', function () {
+it('can match wildcard patterns', function (): void {
     config(['marketing-data-tracker.wildcard_patterns.enabled' => true]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $items = ['utm_source', 'utm_campaign', 'gclid', 'ga_test', 'ga_session'];
     $patterns = ['utm_*', 'ga_*'];
     $matches = $platformManager->matchWildcardPatterns($items, $patterns);
@@ -119,22 +119,22 @@ it('can match wildcard patterns', function () {
         ->and($matches)->not->toContain('gclid');
 });
 
-it('returns empty array when wildcard patterns disabled', function () {
+it('returns empty array when wildcard patterns disabled', function (): void {
     config(['marketing-data-tracker.wildcard_patterns.enabled' => false]);
 
     $items = ['utm_source', 'utm_campaign'];
     $patterns = ['utm_*'];
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $matches = $platformManager->matchWildcardPatterns($items, $patterns);
 
     expect($matches)->toBeEmpty();
 });
 
-it('can match exact patterns', function () {
+it('can match exact patterns', function (): void {
     config(['marketing-data-tracker.wildcard_patterns.enabled' => true]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $items = ['utm_source', 'gclid', 'fbclid'];
     $patterns = ['gclid', 'utm_*'];
     $matches = $platformManager->matchWildcardPatterns($items, $patterns);
@@ -144,23 +144,23 @@ it('can match exact patterns', function () {
         ->and($matches)->not->toContain('fbclid');
 });
 
-it('can get click id parameters', function () {
+it('can get click id parameters', function (): void {
     config([
         'marketing-data-tracker.platforms' => [
             'google_ads' => [
                 'enabled' => true,
                 'click_id_params' => ['gclid', 'gbraid'],
-                'click_id_cookies' => ['_gcl_aw']
+                'click_id_cookies' => ['_gcl_aw'],
             ],
             'meta' => [
                 'enabled' => true,
                 'click_id_params' => ['fbclid'],
-                'click_id_cookies' => ['_fbp']
-            ]
-        ]
+                'click_id_cookies' => ['_fbp'],
+            ],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $allClickIds = $platformManager->getAllClickIdParameters();
 
     expect($allClickIds)->toContain('gclid')
@@ -170,67 +170,67 @@ it('can get click id parameters', function () {
         ->and($allClickIds)->toContain('_fbp');
 });
 
-it('can get platform names', function () {
+it('can get platform names', function (): void {
     config([
         'marketing-data-tracker.platforms' => [
             'google_ads' => ['enabled' => true, 'name' => 'Google Ads'],
             'meta' => ['enabled' => true, 'name' => 'Meta/Facebook'],
             'disabled_platform' => ['enabled' => false, 'name' => 'Disabled'],
-        ]
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $names = $platformManager->getAllPlatformNames();
 
     expect($names)->toBe([
         'google_ads' => 'Google Ads',
-        'meta' => 'Meta/Facebook'
+        'meta' => 'Meta/Facebook',
     ]);
 });
 
-it('can get click id priority', function () {
+it('can get click id priority', function (): void {
     config([
         'marketing-data-tracker.click_id_management.platform_priority' => [
             'gclid' => 10,
             'fbclid' => 9,
-            'msclkid' => 8
-        ]
+            'msclkid' => 8,
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $priority = $platformManager->getClickIdPriority();
 
     expect($priority)->toBe([
         'gclid' => 10,
         'fbclid' => 9,
-        'msclkid' => 8
+        'msclkid' => 8,
     ]);
 });
 
-it('can get google click id config', function () {
+it('can get google click id config', function (): void {
     config([
         'marketing-data-tracker.click_id_management.google_click_ids' => [
             'enabled' => true,
-            'priority' => ['gclid', 'wbraid', 'gbraid']
-        ]
+            'priority' => ['gclid', 'wbraid', 'gbraid'],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $config = $platformManager->getGoogleClickIdConfig();
 
     expect($config['enabled'])->toBeTrue()
         ->and($config['priority'])->toBe(['gclid', 'wbraid', 'gbraid']);
 });
 
-it('filters parameters by patterns', function () {
+it('filters parameters by patterns', function (): void {
     config([
         'marketing-data-tracker.wildcard_patterns' => [
             'enabled' => true,
-            'parameter_patterns' => ['utm_*', 'gad_*']
-        ]
+            'parameter_patterns' => ['utm_*', 'gad_*'],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $parameters = ['utm_source', 'utm_campaign', 'gad_source', 'fbclid', 'other_param'];
     $filtered = $platformManager->filterParametersByPatterns($parameters);
 
@@ -241,15 +241,15 @@ it('filters parameters by patterns', function () {
         ->and($filtered)->not->toContain('other_param');
 });
 
-it('filters cookies by patterns', function () {
+it('filters cookies by patterns', function (): void {
     config([
         'marketing-data-tracker.wildcard_patterns' => [
             'enabled' => true,
-            'cookie_patterns' => ['_ga*', '_gcl*']
-        ]
+            'cookie_patterns' => ['_ga*', '_gcl*'],
+        ],
     ]);
 
-    $platformManager = new PlatformManager();
+    $platformManager = new PlatformManager;
     $cookies = ['_ga', '_ga_123', '_gcl_aw', '_fbp', 'other_cookie'];
     $filtered = $platformManager->filterCookiesByPatterns($cookies);
 

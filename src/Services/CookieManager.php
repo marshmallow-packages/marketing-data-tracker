@@ -3,8 +3,6 @@
 namespace Marshmallow\MarketingData\Services;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Marshmallow\MarketingData\Services\PlatformManager;
 
 class CookieManager
 {
@@ -122,6 +120,7 @@ class CookieManager
                 if (in_array($pattern, $availableCookies)) {
                     $matches[] = $pattern;
                 }
+
                 continue;
             }
 
@@ -217,6 +216,7 @@ class CookieManager
         if (!$consentCookie) {
             // No consent cookie, use defaults
             $defaultConsent = $this->config['consent']['default_consent'] ?? [];
+
             return array_merge([
                 'functional' => true,
                 'analytics' => false,
@@ -252,7 +252,7 @@ class CookieManager
         }
 
         // Wildcard match
-        $wildcardPatterns = array_filter($trackableCookies, fn($cookie) => str_contains($cookie, '*'));
+        $wildcardPatterns = array_filter($trackableCookies, fn ($cookie) => str_contains($cookie, '*'));
         $matches = $this->matchWildcardCookies([$cookieName], $wildcardPatterns);
 
         return !empty($matches);

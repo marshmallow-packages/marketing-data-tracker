@@ -407,43 +407,49 @@ public function test_url_builder()
 ## 🔧 Migration Checklist
 
 ### Pre-Migration
-- [ ] **Backup Configuration**: `cp config/marketing-data-tracker.php config/marketing-data-tracker-v1-backup.php`
-- [ ] **Review Current Usage**: Document which features you currently use
-- [ ] **Test Environment**: Perform migration in staging/testing environment first
+
+-   [ ] **Backup Configuration**: `cp config/marketing-data-tracker.php config/marketing-data-tracker-v1-backup.php`
+-   [ ] **Review Current Usage**: Document which features you currently use
+-   [ ] **Test Environment**: Perform migration in staging/testing environment first
 
 ### Migration Steps
-- [ ] **Update Package**: `composer update marshmallow/marketing-data-tracker`
-- [ ] **Clear Cache**: `php artisan config:clear && php artisan cache:clear`
-- [ ] **Publish Config**: `php artisan vendor:publish --tag="marketing-data-tracker-config" --force`
-- [ ] **Merge Settings**: Integrate custom settings from backup with new config
-- [ ] **Enable Platforms**: Configure platforms you use in new `platforms` section
-- [ ] **Enable Features**: Turn on desired new features (click ID management, events, etc.)
+
+-   [ ] **Update Package**: `composer update marshmallow/marketing-data-tracker`
+-   [ ] **Clear Cache**: `php artisan config:clear && php artisan cache:clear`
+-   [ ] **Publish Config**: `php artisan vendor:publish --tag="marketing-data-tracker-config" --force`
+-   [ ] **Merge Settings**: Integrate custom settings from backup with new config
+-   [ ] **Enable Platforms**: Configure platforms you use in new `platforms` section
+-   [ ] **Enable Features**: Turn on desired new features (click ID management, events, etc.)
 
 ### Code Updates (Optional)
-- [ ] **Add New Traits**: Include `TracksConversions` and `TracksEcommerceEvents` if needed
-- [ ] **Implement Event Listeners**: Set up analytics integration via events
-- [ ] **Use URL Builder**: Replace manual URL construction with `MarketingUrlBuilder`
-- [ ] **Update Method Calls**: Use new `getPrimaryGoogleClickId()` method where appropriate
+
+-   [ ] **Add New Traits**: Include `TracksConversions` and `TracksEcommerceEvents` if needed
+-   [ ] **Implement Event Listeners**: Set up analytics integration via events
+-   [ ] **Use URL Builder**: Replace manual URL construction with `MarketingUrlBuilder`
+-   [ ] **Update Method Calls**: Use new `getPrimaryGoogleClickId()` method where appropriate
 
 ### Testing
-- [ ] **Test Existing Functionality**: Verify UTM tracking still works
-- [ ] **Test New Click ID Priority**: Verify priority-based selection
-- [ ] **Test Platform Detection**: Ensure platforms are detected correctly
-- [ ] **Test Events**: Verify events fire correctly if enabled
-- [ ] **Test URL Builder**: Verify URLs are generated correctly
-- [ ] **Performance Test**: Ensure no performance degradation
+
+-   [ ] **Test Existing Functionality**: Verify UTM tracking still works
+-   [ ] **Test New Click ID Priority**: Verify priority-based selection
+-   [ ] **Test Platform Detection**: Ensure platforms are detected correctly
+-   [ ] **Test Events**: Verify events fire correctly if enabled
+-   [ ] **Test URL Builder**: Verify URLs are generated correctly
+-   [ ] **Performance Test**: Ensure no performance degradation
 
 ### Post-Migration
-- [ ] **Monitor Logs**: Check for any errors or warnings
-- [ ] **Validate Data**: Ensure marketing data is captured correctly
-- [ ] **Update Documentation**: Document your configuration choices
-- [ ] **Train Team**: Brief team on new features and capabilities
+
+-   [ ] **Monitor Logs**: Check for any errors or warnings
+-   [ ] **Validate Data**: Ensure marketing data is captured correctly
+-   [ ] **Update Documentation**: Document your configuration choices
+-   [ ] **Train Team**: Brief team on new features and capabilities
 
 ---
 
 ## 🚨 Troubleshooting Common Issues
 
 ### Issue 1: Configuration Override
+
 **Problem**: New config overwrites custom settings
 **Solution**: Merge your custom settings from the backup file into the new config structure
 
@@ -465,13 +471,16 @@ public function test_url_builder()
 ```
 
 ### Issue 2: Events Not Firing
+
 **Problem**: Events enabled but listeners not receiving them
 **Solution**:
+
 1. Ensure `'events' => ['enabled' => true]`
 2. Check listener registration in `EventServiceProvider`
 3. Clear cache: `php artisan config:clear`
 
 ### Issue 3: Platform Not Detected
+
 **Problem**: `platform_name` returns null
 **Solution**: Ensure the platform is enabled in config:
 
@@ -482,6 +491,7 @@ public function test_url_builder()
 ```
 
 ### Issue 4: Click IDs Not Prioritized
+
 **Problem**: `getPrimaryGoogleClickId()` returns null
 **Solution**: Enable click ID management:
 
@@ -493,6 +503,7 @@ public function test_url_builder()
 ```
 
 ### Issue 5: Wildcard Patterns Not Working
+
 **Problem**: `_ga*` patterns not matching cookies
 **Solution**: Enable wildcard patterns:
 
@@ -504,6 +515,7 @@ public function test_url_builder()
 ```
 
 ### Issue 6: Observer Conflicts
+
 **Problem**: Observer causing model save issues
 **Solution**: Disable observers or configure carefully:
 
@@ -514,13 +526,16 @@ public function test_url_builder()
 ```
 
 ### Issue 7: Performance Issues
+
 **Problem**: Slower response times after upgrade
 **Solution**:
+
 1. Disable unused features
 2. Optimize wildcard patterns
 3. Use caching for platform configurations
 
 ### Issue 8: Cookie Values Empty/Null
+
 **Problem**: Marketing cookies show as empty even though they exist in browser
 **Solution**: v2 automatically handles encrypted cookies, but you can configure:
 
@@ -531,9 +546,10 @@ public function test_url_builder()
 ```
 
 **What it does**:
-- Automatically registers marketing cookies with Laravel's `EncryptCookies` middleware
-- Falls back to reading directly from `$_COOKIE` if cookies are encrypted
-- Ensures `_fbp`, `_gcl_aw`, `gclid` and other marketing cookies are readable
+
+-   Automatically registers marketing cookies with Laravel's `EncryptCookies` middleware
+-   Falls back to reading directly from `$_COOKIE` if cookies are encrypted
+-   Ensures `_fbp`, `_gcl_aw`, `gclid` and other marketing cookies are readable
 
 **Manual Alternative**: If automatic registration doesn't work, manually add cookies to your `EncryptCookies` middleware:
 
@@ -552,21 +568,25 @@ protected $except = [
 If you encounter issues during migration:
 
 ### 1. Check Configuration
-- Ensure all required config sections are present
-- Verify platform enable/disable settings
-- Check for typos in configuration keys
+
+-   Ensure all required config sections are present
+-   Verify platform enable/disable settings
+-   Check for typos in configuration keys
 
 ### 2. Review Laravel Logs
+
 ```bash
 tail -f storage/logs/laravel.log
 ```
 
 ### 3. Test Incrementally
-- Enable one feature at a time
-- Test each feature individually
-- Isolate issues by disabling problematic features
+
+-   Enable one feature at a time
+-   Test each feature individually
+-   Isolate issues by disabling problematic features
 
 ### 4. Fallback Strategy
+
 If you encounter serious issues:
 
 ```php
@@ -609,37 +629,40 @@ My Laravel version is [X.X] and I use the following related packages:
 ```
 
 ### 6. Community Support
-- Check the [GitHub Issues](https://github.com/marshmallow-packages/marketing-data-tracker/issues)
-- Review the [Documentation](https://docs.marshmallow.dev/marketing-data-tracker)
-- Contact support at support@marshmallow.dev
+
+-   Check the [GitHub Issues](https://github.com/marshmallow-packages/marketing-data-tracker/issues)
+-   Contact support at support@marshmallow.dev
 
 ---
 
 ## 📊 What's New in v2
 
 ### Core Enhancements
-- **12+ Platform Support**: Google Ads, Meta, Microsoft, LinkedIn, Twitter, Pinterest, TikTok, Reddit, Snapchat, Amazon, TradeTracker, Email Marketing
-- **Priority-Based Click ID Management**: Configurable priority system (gclid > fbclid > msclkid, etc.)
-- **Wildcard Pattern Matching**: Support for `_ga*`, `utm_*`, `_gcl*` patterns
-- **Event-Driven Architecture**: Complete event system for analytics integration
-- **Marketing URL Builder**: Fluent URL construction with platform templates
-- **Cookie Management**: Advanced cookie tracking with consent management
-- **Conversion Tracking**: Revenue attribution and conversion funnel tracking
-- **E-commerce Events**: GTM-compatible product and transaction tracking
-- **Automatic Observation**: Auto-capture UTM data on model creation
+
+-   **12+ Platform Support**: Google Ads, Meta, Microsoft, LinkedIn, Twitter, Pinterest, TikTok, Reddit, Snapchat, Amazon, TradeTracker, Email Marketing
+-   **Priority-Based Click ID Management**: Configurable priority system (gclid > fbclid > msclkid, etc.)
+-   **Wildcard Pattern Matching**: Support for `_ga*`, `utm_*`, `_gcl*` patterns
+-   **Event-Driven Architecture**: Complete event system for analytics integration
+-   **Marketing URL Builder**: Fluent URL construction with platform templates
+-   **Cookie Management**: Advanced cookie tracking with consent management
+-   **Conversion Tracking**: Revenue attribution and conversion funnel tracking
+-   **E-commerce Events**: GTM-compatible product and transaction tracking
+-   **Automatic Observation**: Auto-capture UTM data on model creation
 
 ### Technical Improvements
-- **New Services**: `PlatformManager`, `CookieManager`, `MarketingUrlBuilder`
-- **New Events**: `MarketingDataCreated`, `ConversionTracked`, `ClickIdDetected`
-- **New Traits**: `TracksConversions`, `TracksEcommerceEvents`
-- **Enhanced Configuration**: Platform-specific settings with individual controls
-- **Comprehensive Testing**: Full test suite with 90%+ coverage
+
+-   **New Services**: `PlatformManager`, `CookieManager`, `MarketingUrlBuilder`
+-   **New Events**: `MarketingDataCreated`, `ConversionTracked`, `ClickIdDetected`
+-   **New Traits**: `TracksConversions`, `TracksEcommerceEvents`
+-   **Enhanced Configuration**: Platform-specific settings with individual controls
+-   **Comprehensive Testing**: Full test suite with 90%+ coverage
 
 ### Backward Compatibility
-- **100% Compatible**: All v1 functionality preserved
-- **Opt-In Features**: New features disabled by default
-- **No Breaking Changes**: Existing code works without modification
-- **Database Compatible**: No schema changes required
+
+-   **100% Compatible**: All v1 functionality preserved
+-   **Opt-In Features**: New features disabled by default
+-   **No Breaking Changes**: Existing code works without modification
+-   **Database Compatible**: No schema changes required
 
 ---
 

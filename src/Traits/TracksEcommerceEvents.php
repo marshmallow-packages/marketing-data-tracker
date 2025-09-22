@@ -67,7 +67,7 @@ trait TracksEcommerceEvents
             return;
         }
 
-        $currency = $currency ?? $this->getCurrency() ?? config('marketing-data-tracker.ecommerce.currency', 'EUR');
+        $currency ??= $this->getCurrency() ?? config('marketing-data-tracker.ecommerce.currency', 'EUR');
 
         $this->trackEcommerceEvent('purchase', [
             'transaction_id' => $transactionId,
@@ -149,7 +149,7 @@ trait TracksEcommerceEvents
             return;
         }
 
-        $currency = $currency ?? config('marketing-data-tracker.ecommerce.currency', 'EUR');
+        $currency ??= config('marketing-data-tracker.ecommerce.currency', 'EUR');
 
         event(new ConversionTracked(
             $this,

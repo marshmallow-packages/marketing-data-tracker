@@ -2,8 +2,6 @@
 
 namespace Marshmallow\MarketingData\Builders;
 
-use Illuminate\Support\Str;
-
 class MarketingUrlBuilder
 {
     protected string $baseUrl;
@@ -33,12 +31,24 @@ class MarketingUrlBuilder
         ?string $content = null,
         ?string $id = null
     ): self {
-        if ($source) $this->parameters['utm_source'] = $source;
-        if ($medium) $this->parameters['utm_medium'] = $medium;
-        if ($campaign) $this->parameters['utm_campaign'] = $campaign;
-        if ($term) $this->parameters['utm_term'] = $term;
-        if ($content) $this->parameters['utm_content'] = $content;
-        if ($id) $this->parameters['utm_id'] = $id;
+        if ($source) {
+            $this->parameters['utm_source'] = $source;
+        }
+        if ($medium) {
+            $this->parameters['utm_medium'] = $medium;
+        }
+        if ($campaign) {
+            $this->parameters['utm_campaign'] = $campaign;
+        }
+        if ($term) {
+            $this->parameters['utm_term'] = $term;
+        }
+        if ($content) {
+            $this->parameters['utm_content'] = $content;
+        }
+        if ($id) {
+            $this->parameters['utm_id'] = $id;
+        }
 
         return $this;
     }
@@ -304,7 +314,7 @@ class MarketingUrlBuilder
         $separator = parse_url($this->baseUrl, PHP_URL_QUERY) ? '&' : '?';
         $queryString = http_build_query($cleanParams);
 
-        return $this->baseUrl . $separator . $queryString;
+        return $this->baseUrl.$separator.$queryString;
     }
 
     /**

@@ -29,7 +29,9 @@ trait HasMarketingParameters
     {
         return [
             // Google Ads
-            'gclid', 'gbraid', 'wbraid',
+            'gclid',
+            'gbraid',
+            'wbraid',
             // Facebook/Meta
             'fbclid',
             // Microsoft/Bing

@@ -105,20 +105,20 @@ The package now features a comprehensive platform management system supporting *
 
 #### Supported Advertising Platforms
 
-| Platform | Click ID | UTM Source | Custom Parameters | Status |
-|----------|----------|------------|-------------------|---------|
-| **Google Ads** | `gclid`, `gbraid`, `wbraid` | `google` | 20+ ValueTrack parameters | ✅ Enhanced |
-| **Meta/Facebook** | `fbclid` | `facebook`, `meta` | Dynamic campaign parameters | ✅ Enhanced |
-| **Microsoft Ads** | `msclkid` | `bing`, `microsoft` | UET tracking parameters | ✅ Enhanced |
-| **LinkedIn Ads** | `li_fat_id` | `linkedin` | Professional network parameters | ✅ Enhanced |
-| **Twitter/X Ads** | `twclid` | `twitter`, `x` | Social media parameters | ✅ Enhanced |
-| **Pinterest Ads** | `epik` | `pinterest` | Visual platform parameters | ✅ Enhanced |
-| **TikTok Ads** | `ttclid` | `tiktok` | Short-form video parameters | ✅ Enhanced |
-| **Reddit Ads** | `rdt_cid` | `reddit` | Community platform parameters | ✅ Enhanced |
-| **Snapchat Ads** | `sscid` | `snapchat` | Mobile-first parameters | ✅ Enhanced |
-| **Amazon DSP** | `maas` | `amazon` | E-commerce advertising | ✅ Enhanced |
-| **TradeTracker** | `ttid` | `tradetracker` | Affiliate network tracking | ✅ New |
-| **Email Marketing** | `mc_cid`, `mc_eid` | `email` | Campaign tracking | ✅ New |
+| Platform            | Click ID                    | UTM Source          | Custom Parameters               | Status      |
+| ------------------- | --------------------------- | ------------------- | ------------------------------- | ----------- |
+| **Google Ads**      | `gclid`, `gbraid`, `wbraid` | `google`            | 20+ ValueTrack parameters       | ✅ Enhanced |
+| **Meta/Facebook**   | `fbclid`                    | `facebook`, `meta`  | Dynamic campaign parameters     | ✅ Enhanced |
+| **Microsoft Ads**   | `msclkid`                   | `bing`, `microsoft` | UET tracking parameters         | ✅ Enhanced |
+| **LinkedIn Ads**    | `li_fat_id`                 | `linkedin`          | Professional network parameters | ✅ Enhanced |
+| **Twitter/X Ads**   | `twclid`                    | `twitter`, `x`      | Social media parameters         | ✅ Enhanced |
+| **Pinterest Ads**   | `epik`                      | `pinterest`         | Visual platform parameters      | ✅ Enhanced |
+| **TikTok Ads**      | `ttclid`                    | `tiktok`            | Short-form video parameters     | ✅ Enhanced |
+| **Reddit Ads**      | `rdt_cid`                   | `reddit`            | Community platform parameters   | ✅ Enhanced |
+| **Snapchat Ads**    | `sscid`                     | `snapchat`          | Mobile-first parameters         | ✅ Enhanced |
+| **Amazon DSP**      | `maas`                      | `amazon`            | E-commerce advertising          | ✅ Enhanced |
+| **TradeTracker**    | `ttid`                      | `tradetracker`      | Affiliate network tracking      | ✅ New      |
+| **Email Marketing** | `mc_cid`, `mc_eid`          | `email`             | Campaign tracking               | ✅ New      |
 
 #### Platform Configuration
 
@@ -147,11 +147,11 @@ Each platform can be individually enabled/disabled and configured:
 
 The package automatically detects and stores **175+ marketing parameters**:
 
-- **Standard UTM**: `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
-- **Google Ads**: `gclid`, `gbraid`, `wbraid`, `mm_campaignid`, `mm_adgroupid`, `mm_keyword`, etc.
-- **Facebook**: `fbclid`, `campaignid`, `adsetid`, `adid`, `placement`, `site_source`
-- **Email Marketing**: `mc_cid` (Mailchimp), `utm_email`, `list_id`
-- **Affiliate Programs**: `ref`, `affiliate_id`, `partner_id`
+-   **Standard UTM**: `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
+-   **Google Ads**: `gclid`, `gbraid`, `wbraid`, `mm_campaignid`, `mm_adgroupid`, `mm_keyword`, etc.
+-   **Facebook**: `fbclid`, `campaignid`, `adsetid`, `adid`, `placement`, `site_source`
+-   **Email Marketing**: `mc_cid` (Mailchimp), `utm_email`, `list_id`
+-   **Affiliate Programs**: `ref`, `affiliate_id`, `partner_id`
 
 ---
 
@@ -407,12 +407,12 @@ $url = MarketingUrlBuilder::fromTemplate(
 
 #### URL Builder Features
 
-- ✅ **Platform Templates**: Pre-configured URLs for Google Ads, Meta, Microsoft, LinkedIn, Twitter, TikTok, Pinterest
-- ✅ **ValueTrack Support**: Full Google Ads ValueTrack parameter integration
-- ✅ **Dynamic Parameters**: Meta/Facebook dynamic parameter placeholders
-- ✅ **Fluent Interface**: Chainable methods for easy URL construction
-- ✅ **Parameter Filtering**: Automatic filtering of empty/null values
-- ✅ **Template System**: Use tracking URL templates from configuration
+-   ✅ **Platform Templates**: Pre-configured URLs for Google Ads, Meta, Microsoft, LinkedIn, Twitter, TikTok, Pinterest
+-   ✅ **ValueTrack Support**: Full Google Ads ValueTrack parameter integration
+-   ✅ **Dynamic Parameters**: Meta/Facebook dynamic parameter placeholders
+-   ✅ **Fluent Interface**: Chainable methods for easy URL construction
+-   ✅ **Parameter Filtering**: Automatic filtering of empty/null values
+-   ✅ **Template System**: Use tracking URL templates from configuration
 
 ### Event-Driven Architecture
 
@@ -548,10 +548,10 @@ The package creates a flexible marketing data storage system:
 
 ### Privacy & GDPR Compliance
 
-- **Consent Management**: Built-in cookie consent handling
-- **Data Anonymization**: Automatic PII detection and masking
-- **Data Export**: GDPR-compliant data export functionality
-- **Retention Policies**: Configurable data retention periods
+-   **Consent Management**: Built-in cookie consent handling
+-   **Data Anonymization**: Automatic PII detection and masking
+-   **Data Export**: GDPR-compliant data export functionality
+-   **Retention Policies**: Configurable data retention periods
 
 ---
 
@@ -617,10 +617,10 @@ $this->assertEquals('123', $user->gclid);
 
 ## 🚀 Performance
 
-- **Minimal Database Impact**: Efficient JSON storage with indexing
-- **Lazy Loading**: Marketing data loaded only when needed
-- **Caching**: Built-in caching for frequently accessed data
-- **Bulk Processing**: Handle high-traffic scenarios efficiently
+-   **Minimal Database Impact**: Efficient JSON storage with indexing
+-   **Lazy Loading**: Marketing data loaded only when needed
+-   **Caching**: Built-in caching for frequently accessed data
+-   **Bulk Processing**: Handle high-traffic scenarios efficiently
 
 ### Optimization Tips
 
@@ -709,43 +709,43 @@ $matches = $platformManager->matchWildcardPatterns(
 
 ### Enhanced HasMarketingParameters Trait
 
-| Method | Description | Example |
-|--------|-------------|---------|
-| `setUtmSourceData()` | Capture marketing parameters | `$user->setUtmSourceData()` |
-| `getPrimaryGoogleClickId()` | **NEW**: Get Google click ID with priority | `$user->getPrimaryGoogleClickId()` |
-| `primary_click_id` | Get highest priority click ID | `$user->primary_click_id` |
-| `platform_name` | Get platform name | `$user->platform_name` |
-| `detectPlatformFromMarketingData()` | Detect advertising platform | `$user->detectPlatformFromMarketingData()` |
-| `marketing_parameter_list` | Get formatted parameters | `$user->marketing_parameter_list` |
+| Method                              | Description                                | Example                                    |
+| ----------------------------------- | ------------------------------------------ | ------------------------------------------ |
+| `setUtmSourceData()`                | Capture marketing parameters               | `$user->setUtmSourceData()`                |
+| `getPrimaryGoogleClickId()`         | **NEW**: Get Google click ID with priority | `$user->getPrimaryGoogleClickId()`         |
+| `primary_click_id`                  | Get highest priority click ID              | `$user->primary_click_id`                  |
+| `platform_name`                     | Get platform name                          | `$user->platform_name`                     |
+| `detectPlatformFromMarketingData()` | Detect advertising platform                | `$user->detectPlatformFromMarketingData()` |
+| `marketing_parameter_list`          | Get formatted parameters                   | `$user->marketing_parameter_list`          |
 
 ### MarketingUrlBuilder
 
-| Method | Description | Example |
-|--------|-------------|---------|
-| `googleAds()` | Build Google Ads URL | `MarketingUrlBuilder::googleAds($url, $campaign)` |
-| `metaAds()` | Build Facebook Ads URL | `MarketingUrlBuilder::metaAds($url, $campaign)` |
-| `microsoftAds()` | **NEW**: Build Microsoft Ads URL | `MarketingUrlBuilder::microsoftAds($url, $campaign)` |
-| `linkedInAds()` | **NEW**: Build LinkedIn Ads URL | `MarketingUrlBuilder::linkedInAds($url, $campaign)` |
-| `withUTM()` | Add UTM parameters | `$builder->withUTM($params)` |
-| `withGoogleValueTrack()` | **NEW**: Add ValueTrack parameters | `$builder->withGoogleValueTrack()` |
-| `withPlatform()` | **NEW**: Add platform-specific params | `$builder->withPlatform('google_ads', $params)` |
+| Method                   | Description                           | Example                                              |
+| ------------------------ | ------------------------------------- | ---------------------------------------------------- |
+| `googleAds()`            | Build Google Ads URL                  | `MarketingUrlBuilder::googleAds($url, $campaign)`    |
+| `metaAds()`              | Build Facebook Ads URL                | `MarketingUrlBuilder::metaAds($url, $campaign)`      |
+| `microsoftAds()`         | **NEW**: Build Microsoft Ads URL      | `MarketingUrlBuilder::microsoftAds($url, $campaign)` |
+| `linkedInAds()`          | **NEW**: Build LinkedIn Ads URL       | `MarketingUrlBuilder::linkedInAds($url, $campaign)`  |
+| `withUTM()`              | Add UTM parameters                    | `$builder->withUTM($params)`                         |
+| `withGoogleValueTrack()` | **NEW**: Add ValueTrack parameters    | `$builder->withGoogleValueTrack()`                   |
+| `withPlatform()`         | **NEW**: Add platform-specific params | `$builder->withPlatform('google_ads', $params)`      |
 
 ### New Services & Events
 
-| Service/Event | Description | Example |
-|---------------|-------------|---------|
-| `PlatformManager` | **NEW**: Platform configuration management | `$manager->getEnabledPlatforms()` |
-| `CookieManager` | **NEW**: Cookie tracking with consent | `$manager->getCookieValues($request)` |
-| `MarketingDataCreated` | **NEW**: Marketing data creation event | `Event::listen(MarketingDataCreated::class, ...)` |
-| `ConversionTracked` | **NEW**: Conversion tracking event | `Event::listen(ConversionTracked::class, ...)` |
-| `ClickIdDetected` | **NEW**: Click ID detection event | `Event::listen(ClickIdDetected::class, ...)` |
+| Service/Event          | Description                                | Example                                           |
+| ---------------------- | ------------------------------------------ | ------------------------------------------------- |
+| `PlatformManager`      | **NEW**: Platform configuration management | `$manager->getEnabledPlatforms()`                 |
+| `CookieManager`        | **NEW**: Cookie tracking with consent      | `$manager->getCookieValues($request)`             |
+| `MarketingDataCreated` | **NEW**: Marketing data creation event     | `Event::listen(MarketingDataCreated::class, ...)` |
+| `ConversionTracked`    | **NEW**: Conversion tracking event         | `Event::listen(ConversionTracked::class, ...)`    |
+| `ClickIdDetected`      | **NEW**: Click ID detection event          | `Event::listen(ClickIdDetected::class, ...)`      |
 
 ### New Traits
 
-| Trait | Description | Example |
-|-------|-------------|---------|
-| `TracksConversions` | **NEW**: Conversion tracking functionality | `$model->trackLeadConversion(50.00)` |
-| `TracksEcommerceEvents` | **NEW**: E-commerce event tracking | `$product->trackViewItem()` |
+| Trait                   | Description                                | Example                              |
+| ----------------------- | ------------------------------------------ | ------------------------------------ |
+| `TracksConversions`     | **NEW**: Conversion tracking functionality | `$model->trackLeadConversion(50.00)` |
+| `TracksEcommerceEvents` | **NEW**: E-commerce event tracking         | `$product->trackViewItem()`          |
 
 ---
 
@@ -965,32 +965,36 @@ $platform = $user->platform_name; // Should return "Meta/Facebook"
 
 ### Migration Checklist
 
-- [ ] **Backup Configuration**: Save your current `config/marketing-data-tracker.php`
-- [ ] **Update Package**: Run `composer update marshmallow/marketing-data-tracker`
-- [ ] **Publish Config**: Run publish command if you want new features
-- [ ] **Enable Platforms**: Configure the platforms you use
-- [ ] **Enable Features**: Turn on click ID management, events, etc. as needed
-- [ ] **Update Models**: Add new traits if you want conversion/e-commerce tracking
-- [ ] **Test Functionality**: Verify existing UTM tracking still works
-- [ ] **Test New Features**: Verify new click ID priority and platform detection
-- [ ] **Monitor Events**: Check that events fire correctly if enabled
-- [ ] **Performance Test**: Ensure no performance degradation
+-   [ ] **Backup Configuration**: Save your current `config/marketing-data-tracker.php`
+-   [ ] **Update Package**: Run `composer update marshmallow/marketing-data-tracker`
+-   [ ] **Publish Config**: Run publish command if you want new features
+-   [ ] **Enable Platforms**: Configure the platforms you use
+-   [ ] **Enable Features**: Turn on click ID management, events, etc. as needed
+-   [ ] **Update Models**: Add new traits if you want conversion/e-commerce tracking
+-   [ ] **Test Functionality**: Verify existing UTM tracking still works
+-   [ ] **Test New Features**: Verify new click ID priority and platform detection
+-   [ ] **Monitor Events**: Check that events fire correctly if enabled
+-   [ ] **Performance Test**: Ensure no performance degradation
 
 ### Common Migration Issues
 
 #### Issue: Configuration Override
+
 **Problem**: New config overwrites custom settings
 **Solution**: Merge your custom settings with the new configuration structure
 
 #### Issue: Events Not Firing
+
 **Problem**: Events enabled but listeners not receiving them
 **Solution**: Ensure `'events' => ['enabled' => true]` and check listener registration
 
 #### Issue: Platform Not Detected
+
 **Problem**: Platform detection returns null
 **Solution**: Ensure the platform is enabled in the new `platforms` configuration
 
 #### Issue: Click IDs Not Prioritized
+
 **Problem**: `getPrimaryGoogleClickId()` returns null
 **Solution**: Enable click ID management: `'click_id_management' => ['enabled' => true]`
 
@@ -1053,18 +1057,23 @@ If you discover any security-related issues, please email security@marshmallow.d
 ## 💡 Use Cases
 
 ### E-commerce Attribution
+
 Track customer acquisition costs, measure ROAS, and optimize ad spend across platforms.
 
 ### SaaS Conversion Tracking
+
 Monitor trial-to-paid conversion rates by marketing channel and campaign.
 
 ### Lead Generation
+
 Attribute leads to their original marketing source for accurate ROI calculation.
 
 ### Content Marketing
+
 Track which content pieces drive the most valuable conversions.
 
 ### Multi-Touch Attribution
+
 Understand the complete customer journey across multiple touchpoints.
 
 ---
@@ -1087,10 +1096,9 @@ Understand the complete customer journey across multiple touchpoints.
 
 ## 📞 Support
 
-- **Documentation**: [Full documentation](https://docs.marshmallow.dev/marketing-data-tracker)
-- **Issues**: [GitHub Issues](https://github.com/marshmallow-packages/marketing-data-tracker/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/marshmallow-packages/marketing-data-tracker/discussions)
-- **Email**: [support@marshmallow.dev](mailto:support@marshmallow.dev)
+-   **Issues**: [GitHub Issues](https://github.com/marshmallow-packages/marketing-data-tracker/issues)
+-   **Discussions**: [GitHub Discussions](https://github.com/marshmallow-packages/marketing-data-tracker/discussions)
+-   **Email**: [support@marshmallow.dev](mailto:support@marshmallow.dev)
 
 ---
 
@@ -1102,11 +1110,11 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## 👏 Credits
 
-- **[Marshmallow](https://github.com/marshmallow-packages)** - Package development and maintenance
-- **[All Contributors](../../contributors)** - Community contributions and feedback
+-   **[Marshmallow](https://github.com/marshmallow-packages)** - Package development and maintenance
+-   **[All Contributors](../../contributors)** - Community contributions and feedback
 
 ---
 
 **Made with ❤️ by the Marshmallow team**
 
-*Star ⭐ this repo if you find it helpful!*
+_Star ⭐ this repo if you find it helpful!_

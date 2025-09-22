@@ -66,11 +66,7 @@ class MarketingData
             return true;
         }
 
-        if (self::shouldIgnorePath($request)) {
-            return true;
-        }
-
-        return false;
+        return (bool) (self::shouldIgnorePath($request));
     }
 
     public static function shouldIgnorePath($request)
@@ -99,15 +95,21 @@ class MarketingData
         return $parameter_values_set;
     }
 
-    public static function setCookieValues($request, $session_key)
+    public static function setCookieValues($request, $session_key): void
     {
         $session_data = session()->get($session_key) ?? [];
 
+        // Try to get cookies from request (decrypted)
         $cookie_data = $request->cookie();
+
+        // If cookies are empty or null, fallback to $_COOKIE superglobal (unencrypted)
+        if (empty($cookie_data) || self::areCookiesEncrypted($cookie_data)) {
+            $cookie_data = $_COOKIE ?? [];
+        }
 
         $cookie_values = self::getCookieValues($cookie_data);
 
-        if ($cookie_values && ! empty($cookie_values)) {
+        if ($cookie_values && !empty($cookie_values)) {
             $cookie_values = array_merge($session_data, $cookie_values ?? []);
             $request->session()->put($session_key, $cookie_values);
         }
@@ -127,7 +129,7 @@ class MarketingData
         return $cookie_value_set;
     }
 
-    public static function setUtmValues($request, $session_key)
+    public static function setUtmValues($request, $session_key): void
     {
         if (session()->has($session_key)) {
             $session_data = session()->get($session_key);
@@ -136,7 +138,8 @@ class MarketingData
             $gclid_request = $request->input('gclid', null);
             if ($gclid_request && $gclid_request == $gclid) {
                 return;
-            } elseif ($gclid || $session_data || $utm_source) {
+            }
+            if ($gclid || $session_data || $utm_source) {
                 return;
             }
         }
@@ -152,7 +155,7 @@ class MarketingData
 
             if ($parameter_key === 'landing_path') {
                 $parameter_value = $request->path();
-                if (! Str::startsWith($parameter_value, '/')) {
+                if (!Str::startsWith($parameter_value, '/')) {
                     $parameter_value = '/'.$parameter_value;
                 }
             }
@@ -163,28 +166,30 @@ class MarketingData
 
             return [$parameter_key => $parameter_value];
         })->reject(function ($parameter_value) {
-            return is_null($parameter_value);
+            return null === $parameter_value;
         })->toArray();
 
-        if ($parameter_values && ! empty($parameter_values)) {
+        if ($parameter_values && !empty($parameter_values)) {
             $request->session()->put($session_key, $parameter_values);
         }
     }
 
-    public static function setSourceValues($request, $session_key)
+    public static function setSourceValues($request, $session_key): void
     {
-        if (! session()->has($session_key)) {
+        if (!session()->has($session_key)) {
             $intended_url = session()->get('url.intended');
-            $source_url = $request->server('HTTP_REFERER');
+            $source_url = $request->fullUrl(); // This is the landing page WITH marketing parameters
 
-            if (Str::of($source_url)->contains([
-                'livewire',
-                'oauth',
-                'password',
-                'reset',
-                'apple.com',
-            ]) && $intended_url) {
-                $source_url = $intended_url;
+            // Only use intended URL if there was a redirect and the current URL doesn't have marketing params
+            if ($intended_url && !$request->hasAny(['utm_source', 'gclid', 'fbclid', 'ttclid', 'msclkid'])) {
+                // Check if intended URL has marketing parameters
+                $parsedIntended = parse_url($intended_url);
+                if (isset($parsedIntended['query'])) {
+                    parse_str($parsedIntended['query'], $intendedParams);
+                    if (array_intersect_key($intendedParams, array_flip(['utm_source', 'gclid', 'fbclid', 'ttclid', 'msclkid']))) {
+                        $source_url = $intended_url;
+                    }
+                }
             }
 
             $source_path = null;
@@ -194,6 +199,10 @@ class MarketingData
                     ->before('?')
                     ->after($app_url)
                     ->toString();
+
+                if (!Str::startsWith($source_path, '/')) {
+                    $source_path = '/'.$source_path;
+                }
             }
 
             $source_parameters = [
@@ -208,7 +217,7 @@ class MarketingData
         $source_parameters['request_url'] = $request->url();
         $source_parameters['referer_url'] = $request->server('HTTP_REFERER');
 
-        if ($source_parameters && ! empty($source_parameters)) {
+        if ($source_parameters && !empty($source_parameters)) {
             $request->session()->put($session_key, $source_parameters);
         }
     }
@@ -249,9 +258,9 @@ class MarketingData
                     return [$matching_key => $marketing_value];
                 });
 
-                if (! $keep_empty_keys) {
+                if (!$keep_empty_keys) {
                     $matching_keys = $matching_keys->reject(function ($marketing_value, $marketing_key) {
-                        return is_null($marketing_value);
+                        return null === $marketing_value;
                     });
                 }
 
@@ -271,12 +280,44 @@ class MarketingData
             return [$marketing_key => $marketing_value];
         });
 
-        if (! $keep_empty_keys) {
+        if (!$keep_empty_keys) {
             $marketing_values = $marketing_values->reject(function ($marketing_value, $marketing_key) {
-                return is_null($marketing_value);
+                return null === $marketing_value;
             });
         }
 
         return $marketing_values->toArray();
+    }
+
+    /**
+     * Check if cookies appear to be encrypted by Laravel's EncryptCookies middleware
+     * This is a heuristic approach - encrypted cookies from Laravel are typically null or empty
+     * when accessed via $request->cookie() without proper exceptions
+     */
+    protected static function areCookiesEncrypted(array $cookie_data): bool
+    {
+        // Get a sample of expected marketing cookies
+        $marketingCookieKeys = self::getMarketingDataCookies();
+
+        if (empty($marketingCookieKeys)) {
+            return false;
+        }
+
+        // If we have marketing cookie keys configured but they're all null/empty in the request,
+        // it's likely they're encrypted and can't be read
+        $nullCount = 0;
+        $totalChecked = 0;
+
+        foreach (array_slice($marketingCookieKeys, 0, 5) as $cookieKey) { // Check first 5 for performance
+            if (isset($_COOKIE[$cookieKey])) { // Cookie exists in $_COOKIE
+                $totalChecked++;
+                if (!isset($cookie_data[$cookieKey]) || $cookie_data[$cookieKey] === null) {
+                    $nullCount++;
+                }
+            }
+        }
+
+        // If we found cookies in $_COOKIE but they're null in request, they're likely encrypted
+        return $totalChecked > 0 && $nullCount === $totalChecked;
     }
 }

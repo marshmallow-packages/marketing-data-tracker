@@ -28,7 +28,7 @@ class MarketingData extends Model
 
     protected function getDataArray(): array
     {
-        if (! filled($this->data)) {
+        if (!filled($this->data)) {
             return [];
         }
 
@@ -44,7 +44,7 @@ class MarketingData extends Model
         $current_data = $this->getDataArray();
         $new_data = array_merge($current_data, [$key => $value]);
 
-        if (! filled($value)) {
+        if (!filled($value)) {
             $new_data = Arr::except($new_data, $key);
         }
 
@@ -56,7 +56,7 @@ class MarketingData extends Model
     public function getMarketingData(string $key)
     {
         $data = $this->getDataArray();
-        if (! array_key_exists($key, $data)) {
+        if (!array_key_exists($key, $data)) {
             return null;
         }
 

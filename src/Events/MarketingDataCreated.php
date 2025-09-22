@@ -35,6 +35,7 @@ class MarketingDataCreated extends MarketingDataEvent
     public function hasUtmSource(): bool
     {
         $utmData = $this->getUtmData();
+
         return !empty($utmData['utm_source']);
     }
 

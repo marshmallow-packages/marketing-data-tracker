@@ -2,6 +2,7 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
+use DateTime;
 use Marshmallow\MarketingData\Events\ConversionTracked;
 
 trait TracksConversions
@@ -32,9 +33,9 @@ trait TracksConversions
         }
 
         // Use configured value if not provided
-        $value = $value ?? $conversionConfig['value'] ?? $this->getConversionValue();
-        $currency = $currency ?? $this->getConversionCurrency() ?? 'EUR';
-        $conversionId = $conversionId ?? $this->generateConversionId($type);
+        $value ??= $conversionConfig['value'] ?? $this->getConversionValue();
+        $currency ??= $this->getConversionCurrency() ?? 'EUR';
+        $conversionId ??= $this->generateConversionId($type);
 
         // Fire conversion event
         event(new ConversionTracked(
@@ -123,6 +124,7 @@ trait TracksConversions
     protected function getConversionConfig(string $type): ?array
     {
         $conversionTypes = config('marketing-data-tracker.conversions.types', []);
+
         return $conversionTypes[$type] ?? null;
     }
 
@@ -202,12 +204,14 @@ trait TracksConversions
         // Check model attributes first
         if ($this->hasAttribute('conversions_tracked')) {
             $tracked = $this->conversions_tracked ?? [];
+
             return isset($tracked[$type]);
         }
 
         // Check session as fallback
         $sessionKey = "conversions_tracked_{$this->getKey()}";
         $tracked = session()->get($sessionKey, []);
+
         return isset($tracked[$type]);
     }
 
@@ -223,6 +227,7 @@ trait TracksConversions
 
         // Check session as fallback
         $sessionKey = "conversions_tracked_{$this->getKey()}";
+
         return session()->get($sessionKey, []);
     }
 
@@ -267,16 +272,16 @@ trait TracksConversions
     /**
      * Get conversion timestamp
      */
-    public function getConversionTimestamp(): ?\DateTime
+    public function getConversionTimestamp(): ?DateTime
     {
         // Return creation time as default conversion timestamp
         if ($this->created_at) {
-            return $this->created_at instanceof \DateTime
+            return $this->created_at instanceof DateTime
                 ? $this->created_at
-                : new \DateTime($this->created_at);
+                : new DateTime($this->created_at);
         }
 
-        return new \DateTime();
+        return new DateTime;
     }
 
     /**
@@ -308,6 +313,7 @@ trait TracksConversions
     public function getConversionPriority(string $type): int
     {
         $config = $this->getConversionConfig($type);
+
         return $config['priority'] ?? 0;
     }
 
@@ -317,7 +323,7 @@ trait TracksConversions
     public function trackDelayedConversion(string $type, int $delaySeconds, array $data = []): void
     {
         // This would typically use a job queue to track conversion after delay
-        dispatch(function () use ($type, $data) {
+        dispatch(function () use ($type, $data): void {
             $this->trackCustomConversion($type, $data);
         })->delay(now()->addSeconds($delaySeconds));
     }
@@ -328,6 +334,7 @@ trait TracksConversions
     public function getConversionFunnelPosition(string $type): int
     {
         $config = $this->getConversionConfig($type);
+
         return $config['funnel_position'] ?? 1;
     }
 

@@ -2,6 +2,8 @@
 
 namespace Marshmallow\MarketingData\Contracts;
 
+use DateTime;
+
 interface ConversionTrackable
 {
     /**
@@ -32,9 +34,8 @@ interface ConversionTrackable
     /**
      * Mark conversion as tracked
      *
-     * @param string $type The conversion type
+     * @param string      $type         The conversion type
      * @param string|null $conversionId Optional external conversion ID
-     * @return void
      */
     public function markConversionTracked(string $type, ?string $conversionId = null): void;
 
@@ -51,5 +52,5 @@ interface ConversionTrackable
     /**
      * Get the conversion timestamp
      */
-    public function getConversionTimestamp(): ?\DateTime;
+    public function getConversionTimestamp(): ?DateTime;
 }

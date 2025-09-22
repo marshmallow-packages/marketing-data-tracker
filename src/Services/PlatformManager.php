@@ -2,8 +2,6 @@
 
 namespace Marshmallow\MarketingData\Services;
 
-use Illuminate\Support\Collection;
-
 class PlatformManager
 {
     protected array $config;
@@ -21,7 +19,7 @@ class PlatformManager
     public function getEnabledPlatforms(): array
     {
         return collect($this->config)
-            ->filter(fn($platform) => $platform['enabled'] ?? false)
+            ->filter(fn ($platform) => $platform['enabled'] ?? false)
             ->toArray();
     }
 
@@ -155,8 +153,8 @@ class PlatformManager
     public function getAllPlatformNames(): array
     {
         return collect($this->config)
-            ->filter(fn($platform) => $platform['enabled'] ?? false)
-            ->mapWithKeys(fn($platform, $key) => [$key => $platform['name'] ?? $key])
+            ->filter(fn ($platform) => $platform['enabled'] ?? false)
+            ->mapWithKeys(fn ($platform, $key) => [$key => $platform['name'] ?? $key])
             ->toArray();
     }
 
@@ -177,6 +175,7 @@ class PlatformManager
                 if (in_array($pattern, $items)) {
                     $matches[] = $pattern;
                 }
+
                 continue;
             }
 
@@ -198,6 +197,7 @@ class PlatformManager
     public function filterParametersByPatterns(array $parameters): array
     {
         $patterns = $this->wildcardPatterns['parameter_patterns'] ?? [];
+
         return $this->matchWildcardPatterns($parameters, $patterns);
     }
 
@@ -207,6 +207,7 @@ class PlatformManager
     public function filterCookiesByPatterns(array $cookies): array
     {
         $patterns = $this->wildcardPatterns['cookie_patterns'] ?? [];
+
         return $this->matchWildcardPatterns($cookies, $patterns);
     }
 

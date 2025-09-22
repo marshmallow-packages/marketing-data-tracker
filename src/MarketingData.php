@@ -83,7 +83,7 @@ class MarketingData
         return isset($request->segments()[0]) && in_array($request->segments()[0], [
             'nova-api',
             'nova-vendor',
-            ltrim(config('nova.path'), '/'),
+            mb_ltrim(config('nova.path'), '/'),
         ]);
     }
 
@@ -310,9 +310,9 @@ class MarketingData
 
         foreach (array_slice($marketingCookieKeys, 0, 5) as $cookieKey) { // Check first 5 for performance
             if (isset($_COOKIE[$cookieKey])) { // Cookie exists in $_COOKIE
-                $totalChecked++;
+                ++$totalChecked;
                 if (!isset($cookie_data[$cookieKey]) || $cookie_data[$cookieKey] === null) {
-                    $nullCount++;
+                    ++$nullCount;
                 }
             }
         }

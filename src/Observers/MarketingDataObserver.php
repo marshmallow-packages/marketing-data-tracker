@@ -2,10 +2,11 @@
 
 namespace Marshmallow\MarketingData\Observers;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Marshmallow\MarketingData\Events\ClickIdDetected;
 use Marshmallow\MarketingData\Events\MarketingDataCreated;
 use Marshmallow\MarketingData\Events\MarketingDataUpdated;
-use Marshmallow\MarketingData\Events\ClickIdDetected;
 use Marshmallow\MarketingData\Services\PlatformManager;
 
 class MarketingDataObserver
@@ -103,10 +104,10 @@ class MarketingDataObserver
 
         try {
             $model->setUtmSourceData($forgetAfterSave);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log error but don't break the flow
             logger()->warning('Failed to auto-set UTM data', [
-                'model' => get_class($model),
+                'model' => $model::class,
                 'model_id' => $model->getKey(),
                 'error' => $e->getMessage(),
             ]);
@@ -145,7 +146,7 @@ class MarketingDataObserver
             'type' => $clickIdType,
             'platform' => $platform,
             'detected_at' => now()->toISOString(),
-            'model_class' => get_class($model),
+            'model_class' => $model::class,
             'model_id' => $model->getKey(),
         ]);
 
@@ -223,8 +224,8 @@ class MarketingDataObserver
     protected function hasMarketingDataChanged(array $oldData, array $newData): bool
     {
         // Remove empty values for comparison
-        $oldData = array_filter($oldData, fn($value) => !empty($value));
-        $newData = array_filter($newData, fn($value) => !empty($value));
+        $oldData = array_filter($oldData, fn ($value) => !empty($value));
+        $newData = array_filter($newData, fn ($value) => !empty($value));
 
         return $oldData !== $newData;
     }
@@ -306,7 +307,7 @@ class MarketingDataObserver
     public function removeModel(string $modelClass): void
     {
         $models = $this->getConfiguredModels();
-        $models = array_filter($models, fn($model) => $model !== $modelClass);
+        $models = array_filter($models, fn ($model) => $model !== $modelClass);
         config(['marketing-data-tracker.observers.models' => array_values($models)]);
     }
 

@@ -2,14 +2,14 @@
 
 use Marshmallow\MarketingData\Builders\MarketingUrlBuilder;
 
-it('can create builder instance', function () {
+it('can create builder instance', function (): void {
     $builder = MarketingUrlBuilder::make('https://example.com');
 
     expect($builder)->toBeInstanceOf(MarketingUrlBuilder::class)
         ->and($builder->build())->toBe('https://example.com');
 });
 
-it('can add utm parameters', function () {
+it('can add utm parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc', 'summer-sale', 'shoes', 'banner')
         ->build();
@@ -21,7 +21,7 @@ it('can add utm parameters', function () {
         ->and($url)->toContain('utm_content=banner');
 });
 
-it('can add partial utm parameters', function () {
+it('can add partial utm parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc')
         ->build();
@@ -31,9 +31,9 @@ it('can add partial utm parameters', function () {
         ->and($url)->not->toContain('utm_campaign');
 });
 
-it('can add google ads parameters', function () {
+it('can add google ads parameters', function (): void {
     config([
-        'marketing-data-tracker.tracking_urls.google_ads' => 'utm_source=google&utm_medium=cpc&gclid={gclid}&mm_campaignid={campaignid}'
+        'marketing-data-tracker.tracking_urls.google_ads' => 'utm_source=google&utm_medium=cpc&gclid={gclid}&mm_campaignid={campaignid}',
     ]);
 
     $url = MarketingUrlBuilder::make('https://example.com')
@@ -47,9 +47,9 @@ it('can add google ads parameters', function () {
         ->and($url)->toContain('mm_keyword=test-keyword');
 });
 
-it('can add meta ads parameters', function () {
+it('can add meta ads parameters', function (): void {
     config([
-        'marketing-data-tracker.tracking_urls.meta_ads' => 'utm_source=facebook&utm_medium=paid&fbclid={{fbclid}}'
+        'marketing-data-tracker.tracking_urls.meta_ads' => 'utm_source=facebook&utm_medium=paid&fbclid={{fbclid}}',
     ]);
 
     $url = MarketingUrlBuilder::make('https://example.com')
@@ -62,19 +62,19 @@ it('can add meta ads parameters', function () {
         ->and($url)->toContain('custom_param=test');
 });
 
-it('can add platform specific parameters', function () {
+it('can add platform specific parameters', function (): void {
     config([
         'marketing-data-tracker.platforms.google_ads' => [
             'enabled' => true,
-            'parameters' => ['gclid', 'mm_campaignid', 'mm_keyword']
-        ]
+            'parameters' => ['gclid', 'mm_campaignid', 'mm_keyword'],
+        ],
     ]);
 
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withPlatform('google_ads', [
             'gclid' => 'test_gclid',
             'mm_campaignid' => '12345',
-            'forbidden_param' => 'should_not_appear'
+            'forbidden_param' => 'should_not_appear',
         ])
         ->build();
 
@@ -83,12 +83,12 @@ it('can add platform specific parameters', function () {
         ->and($url)->not->toContain('forbidden_param');
 });
 
-it('platform disabled returns no parameters', function () {
+it('platform disabled returns no parameters', function (): void {
     config([
         'marketing-data-tracker.platforms.disabled_platform' => [
             'enabled' => false,
-            'parameters' => ['test_param']
-        ]
+            'parameters' => ['test_param'],
+        ],
     ]);
 
     $url = MarketingUrlBuilder::make('https://example.com')
@@ -98,7 +98,7 @@ it('platform disabled returns no parameters', function () {
     expect($url)->toBe('https://example.com');
 });
 
-it('can add google valuetrack parameters', function () {
+it('can add google valuetrack parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withGoogleValueTrack(['custom_param' => '{custom}'])
         ->build();
@@ -109,7 +109,7 @@ it('can add google valuetrack parameters', function () {
         ->and($url)->toContain('custom_param={custom}');
 });
 
-it('can add meta dynamic parameters', function () {
+it('can add meta dynamic parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withMetaDynamicParams()
         ->build();
@@ -119,7 +119,7 @@ it('can add meta dynamic parameters', function () {
         ->and($url)->toContain('fbclid={{fbclid}}');
 });
 
-it('can add microsoft ads parameters', function () {
+it('can add microsoft ads parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withMicrosoftAds(['utm_mskeyword' => 'test-keyword'])
         ->build();
@@ -130,7 +130,7 @@ it('can add microsoft ads parameters', function () {
         ->and($url)->toContain('utm_mskeyword=test-keyword');
 });
 
-it('can add linkedin ads parameters', function () {
+it('can add linkedin ads parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withLinkedInAds()
         ->build();
@@ -140,7 +140,7 @@ it('can add linkedin ads parameters', function () {
         ->and($url)->toContain('li_fat_id={li_fat_id}');
 });
 
-it('can add twitter ads parameters', function () {
+it('can add twitter ads parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withTwitterAds()
         ->build();
@@ -150,7 +150,7 @@ it('can add twitter ads parameters', function () {
         ->and($url)->toContain('twclid={twclid}');
 });
 
-it('can add custom parameters', function () {
+it('can add custom parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withCustomParams(['custom1' => 'value1', 'custom2' => 'value2'])
         ->build();
@@ -159,7 +159,7 @@ it('can add custom parameters', function () {
         ->and($url)->toContain('custom2=value2');
 });
 
-it('can set single parameter', function () {
+it('can set single parameter', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withParameter('test_param', 'test_value')
         ->build();
@@ -167,7 +167,7 @@ it('can set single parameter', function () {
     expect($url)->toContain('test_param=test_value');
 });
 
-it('can remove parameters', function () {
+it('can remove parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc', 'campaign')
         ->without('utm_campaign')
@@ -178,7 +178,7 @@ it('can remove parameters', function () {
         ->and($url)->not->toContain('utm_campaign');
 });
 
-it('can remove multiple parameters', function () {
+it('can remove multiple parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc', 'campaign', 'term', 'content')
         ->withoutParameters(['utm_term', 'utm_content'])
@@ -189,7 +189,7 @@ it('can remove multiple parameters', function () {
         ->and($url)->not->toContain('utm_content');
 });
 
-it('can clear all parameters', function () {
+it('can clear all parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc', 'campaign')
         ->clearParameters()
@@ -198,7 +198,7 @@ it('can clear all parameters', function () {
     expect($url)->toBe('https://example.com');
 });
 
-it('filters empty parameters', function () {
+it('filters empty parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', '', null)
         ->withParameter('empty', '')
@@ -214,7 +214,7 @@ it('filters empty parameters', function () {
         ->and($url)->not->toContain('null_param');
 });
 
-it('handles existing query parameters', function () {
+it('handles existing query parameters', function (): void {
     $url = MarketingUrlBuilder::make('https://example.com?existing=param')
         ->withUTM('google', 'cpc')
         ->build();
@@ -224,9 +224,9 @@ it('handles existing query parameters', function () {
         ->and($url)->toContain('&utm_source'); // Should use & not ?
 });
 
-it('static google ads method', function () {
+it('static google ads method', function (): void {
     config([
-        'marketing-data-tracker.tracking_urls.google_ads' => 'gclid={gclid}'
+        'marketing-data-tracker.tracking_urls.google_ads' => 'gclid={gclid}',
     ]);
 
     $url = MarketingUrlBuilder::googleAds('https://example.com', 'test-campaign');
@@ -237,9 +237,9 @@ it('static google ads method', function () {
         ->and($url)->toContain('gclid={gclid}');
 });
 
-it('static meta ads method', function () {
+it('static meta ads method', function (): void {
     config([
-        'marketing-data-tracker.tracking_urls.meta_ads' => 'fbclid={{fbclid}}'
+        'marketing-data-tracker.tracking_urls.meta_ads' => 'fbclid={{fbclid}}',
     ]);
 
     $url = MarketingUrlBuilder::metaAds('https://example.com', 'awareness-campaign');
@@ -250,7 +250,7 @@ it('static meta ads method', function () {
         ->and($url)->toContain('fbclid={{fbclid}}');
 });
 
-it('static utm method', function () {
+it('static utm method', function (): void {
     $url = MarketingUrlBuilder::utm(
         'https://example.com',
         'newsletter',
@@ -267,9 +267,9 @@ it('static utm method', function () {
         ->and($url)->toContain('utm_content=top');
 });
 
-it('from template method', function () {
+it('from template method', function (): void {
     config([
-        'marketing-data-tracker.tracking_urls.custom_template' => 'source={source}&campaign={campaign}'
+        'marketing-data-tracker.tracking_urls.custom_template' => 'source={source}&campaign={campaign}',
     ]);
 
     $url = MarketingUrlBuilder::fromTemplate(
@@ -282,7 +282,7 @@ it('from template method', function () {
         ->and($url)->toContain('campaign=test');
 });
 
-it('toString method', function () {
+it('toString method', function (): void {
     $builder = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc');
 
@@ -292,7 +292,7 @@ it('toString method', function () {
         ->and($url)->toContain('utm_medium=cpc');
 });
 
-it('get parameters method', function () {
+it('get parameters method', function (): void {
     $builder = MarketingUrlBuilder::make('https://example.com')
         ->withUTM('google', 'cpc', 'campaign');
 
@@ -301,6 +301,6 @@ it('get parameters method', function () {
     expect($params)->toBe([
         'utm_source' => 'google',
         'utm_medium' => 'cpc',
-        'utm_campaign' => 'campaign'
+        'utm_campaign' => 'campaign',
     ]);
 });

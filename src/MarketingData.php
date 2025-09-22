@@ -99,7 +99,13 @@ class MarketingData
     {
         $session_data = session()->get($session_key) ?? [];
 
+        // Try to get cookies from request (decrypted)
         $cookie_data = $request->cookie();
+
+        // If cookies are empty or null, fallback to $_COOKIE superglobal (unencrypted)
+        if (empty($cookie_data) || self::areCookiesEncrypted($cookie_data)) {
+            $cookie_data = $_COOKIE ?? [];
+        }
 
         $cookie_values = self::getCookieValues($cookie_data);
 
@@ -281,5 +287,37 @@ class MarketingData
         }
 
         return $marketing_values->toArray();
+    }
+
+    /**
+     * Check if cookies appear to be encrypted by Laravel's EncryptCookies middleware
+     * This is a heuristic approach - encrypted cookies from Laravel are typically null or empty
+     * when accessed via $request->cookie() without proper exceptions
+     */
+    protected static function areCookiesEncrypted(array $cookie_data): bool
+    {
+        // Get a sample of expected marketing cookies
+        $marketingCookieKeys = self::getMarketingDataCookies();
+
+        if (empty($marketingCookieKeys)) {
+            return false;
+        }
+
+        // If we have marketing cookie keys configured but they're all null/empty in the request,
+        // it's likely they're encrypted and can't be read
+        $nullCount = 0;
+        $totalChecked = 0;
+
+        foreach (array_slice($marketingCookieKeys, 0, 5) as $cookieKey) { // Check first 5 for performance
+            if (isset($_COOKIE[$cookieKey])) { // Cookie exists in $_COOKIE
+                $totalChecked++;
+                if (!isset($cookie_data[$cookieKey]) || $cookie_data[$cookieKey] === null) {
+                    $nullCount++;
+                }
+            }
+        }
+
+        // If we found cookies in $_COOKIE but they're null in request, they're likely encrypted
+        return $totalChecked > 0 && $nullCount === $totalChecked;
     }
 }

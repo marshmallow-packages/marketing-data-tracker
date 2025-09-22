@@ -682,11 +682,49 @@ trait HasMarketingParameters
     }
 
     /**
+     * Get the primary Google Click ID using configurable priority
+     * Uses priority order from config (default: gclid > wbraid > gbraid)
+     */
+    public function getPrimaryGoogleClickId(): ?string
+    {
+        $config = config('marketing-data-tracker.click_id_management.google_click_ids', []);
+
+        if (!($config['enabled'] ?? false)) {
+            return null;
+        }
+
+        $priority = $config['priority'] ?? ['gclid', 'wbraid', 'gbraid'];
+        $cookieMapping = $config['cookie_mapping'] ?? [];
+        $extractGclidValue = $config['extract_gclid_value'] ?? true;
+
+        $allMarketingData = $this->getAllRawMarketingListAttribute();
+
+        foreach ($priority as $key) {
+            // Check both session value and cookie value
+            $sessionValue = $allMarketingData[$key] ?? null;
+            $cookieKey = $cookieMapping[$key] ?? null;
+            $cookieValue = $cookieKey ? ($allMarketingData[$cookieKey] ?? null) : null;
+
+            $value = $cookieValue ?? $sessionValue;
+
+            if ($value && !empty(trim($value))) {
+                // Special handling for gclid extraction
+                if ($key === 'gclid' && $extractGclidValue && str_contains($value, '.')) {
+                    $value = substr($value, strrpos($value, '.') + 1);
+                }
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get the primary click ID from any platform (prioritized by platform importance)
      */
     public function getPrimaryClickIdAttribute(): ?string
     {
-        $platformPriority = [
+        $platformPriority = config('marketing-data-tracker.click_id_management.platform_priority', [
             'gclid' => 10,      // Google Ads - highest priority
             'fbclid' => 9,      // Facebook/Meta
             'msclkid' => 8,     // Microsoft/Bing
@@ -698,7 +736,7 @@ trait HasMarketingParameters
             'sscid' => 2,       // Snapchat
             'gbraid' => 1,      // Google iOS tracking
             'wbraid' => 1,      // Google iOS web-to-app
-        ];
+        ]);
 
         $allClickIds = $this->getAllClickIdsAttribute();
 
@@ -717,6 +755,26 @@ trait HasMarketingParameters
 
         // Extract clean value (handle Google cookie format)
         return $this->extractClickIdValue($primaryValue, $primaryParam);
+    }
+
+    /**
+     * Extract clean click ID value from cookie format
+     */
+    protected function extractClickIdValue(?string $value, string $parameter): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        // Handle Google click ID extraction from cookie format
+        $config = config('marketing-data-tracker.click_id_management.google_click_ids', []);
+        $extractGclidValue = $config['extract_gclid_value'] ?? true;
+
+        if ($parameter === 'gclid' && $extractGclidValue && str_contains($value, '.')) {
+            return substr($value, strrpos($value, '.') + 1);
+        }
+
+        return trim($value);
     }
 
     /**

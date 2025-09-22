@@ -22,6 +22,213 @@ return [
      */
     'marketing_data_cast' => Marshmallow\MarketingData\Casts\MarketingDataCast::class,
 
+    /*
+     * Enhanced Platform Support System
+     * Configure specific platforms with their parameters, cookies, and tracking templates
+     */
+    'platforms' => [
+        'google_ads' => [
+            'enabled' => true,
+            'name' => 'Google Ads',
+            'click_id_params' => ['gclid', 'gbraid', 'wbraid'],
+            'click_id_cookies' => ['_gcl_aw', '_gcl_gb', '_gcl_ag'],
+            'parameters' => [
+                'gclid',
+                'gbraid',
+                'wbraid',
+                'gad_source',
+                'gad_campaignid',
+                'gad_medium',
+                'gclsrc',
+                'dclid',
+                'mm_campaignid',
+                'mm_adgroupid',
+                'mm_feedid',
+                'mm_position',
+                'mm_linterest',
+                'mm_lphys',
+                'mm_matchtype',
+                'mm_network',
+                'mm_device',
+                'mm_devicemodel',
+                'mm_creative',
+                'mm_keyword',
+                'mm_placement',
+                'mm_targetid',
+                'mm_version',
+                'mm_random',
+                'mm_aceid'
+            ],
+            'cookies' => [
+                '_ga',
+                '_gid',
+                '_gat',
+                '_gtag_UA_*',
+                '_gtag_GA_*',
+                '_gcl_au',
+                '_gcl_aw',
+                '_gcl_dc',
+                '_gcl_gs',
+                '_gcl_ag',
+                '_gcl_gb',
+                '_ga*',
+                '_gcl*'
+            ],
+        ],
+        'meta' => [
+            'enabled' => true,
+            'name' => 'Meta/Facebook',
+            'click_id_params' => ['fbclid'],
+            'click_id_cookies' => ['_fbp', 'fbc', '_fbc'],
+            'parameters' => [
+                'fbclid',
+                'fb_source',
+                'campaignid',
+                'adsetid',
+                'adid',
+                'placement',
+                'site_source',
+                'version',
+                'fb_action_ids',
+                'fb_action_types',
+                'fb_ref',
+                'h_ad_id'
+            ],
+            'cookies' => ['_fbp', 'fbp', 'fbc', '_fbc', '_fbp*', '_fbc*'],
+        ],
+        'microsoft' => [
+            'enabled' => true,
+            'name' => 'Microsoft Ads',
+            'click_id_params' => ['msclkid'],
+            'click_id_cookies' => ['_uetmsclkid'],
+            'parameters' => [
+                'msclkid',
+                'utm_mscampaign',
+                'utm_msadgroup',
+                'utm_msad',
+                'utm_mskeyword',
+                'utm_msnetwork',
+                'utm_msdevice',
+                'utm_msplacement',
+                'ef_id'
+            ],
+            'cookies' => ['_uetsid', '_uetvid', '_uetmsclkid', '_uetvidtk', '_uet*'],
+        ],
+        'linkedin' => [
+            'enabled' => true,
+            'name' => 'LinkedIn',
+            'click_id_params' => ['li_fat_id'],
+            'click_id_cookies' => ['li_fat_id'],
+            'parameters' => ['li_fat_id', 'utm_linkedin', 'utm_li_campaign', 'utm_li_creative', 'utm_li_format'],
+            'cookies' => ['lidc', 'li_sugr', 'UserMatchHistory', 'AnalyticsSyncHistory', 'li_fat_id', 'li_*'],
+        ],
+        'twitter' => [
+            'enabled' => true,
+            'name' => 'Twitter/X',
+            'click_id_params' => ['twclid'],
+            'click_id_cookies' => [],
+            'parameters' => ['twclid', 'tw_campaign', 'tw_creative', 'tw_placement', 'tw_adformat', 'utm_twitter'],
+            'cookies' => ['twid', 'auth_token', 'guest_id', 'personalization_id'],
+        ],
+        'pinterest' => [
+            'enabled' => true,
+            'name' => 'Pinterest',
+            'click_id_params' => ['epik'],
+            'click_id_cookies' => ['_epik', '_derived_epik'],
+            'parameters' => ['epik', 'utm_pinterest', 'utm_pin_campaign', 'utm_pin_group', 'utm_pin_ad', 'pp'],
+            'cookies' => ['_epik', '_pin_unauth', '_pinterest_sess', '_pinterest_ct_ua', '_derived_epik', '_epik*'],
+        ],
+        'tiktok' => [
+            'enabled' => true,
+            'name' => 'TikTok',
+            'click_id_params' => ['ttclid'],
+            'click_id_cookies' => ['ttclid'],
+            'parameters' => ['ttclid', 'tt_campaign', 'tt_content', 'tt_medium', 'tt_term'],
+            'cookies' => ['_ttp', 'tt_appInfo', 'tt_sessionId', 'ttclid', 'tt_chain_token', '_ttp*'],
+        ],
+        'reddit' => [
+            'enabled' => true,
+            'name' => 'Reddit',
+            'click_id_params' => ['rdt_cid'],
+            'click_id_cookies' => [],
+            'parameters' => ['rdt_cid', 'utm_reddit'],
+            'cookies' => ['rdt_user_id', 'reddit_session'],
+        ],
+        'snapchat' => [
+            'enabled' => true,
+            'name' => 'Snapchat',
+            'click_id_params' => ['sscid'],
+            'click_id_cookies' => [],
+            'parameters' => ['sscid', 'utm_snapchat'],
+            'cookies' => ['_scid', '_sctr'],
+        ],
+        'amazon' => [
+            'enabled' => true,
+            'name' => 'Amazon DSP',
+            'click_id_params' => [],
+            'click_id_cookies' => [],
+            'parameters' => ['maas', 'utm_amazon'],
+            'cookies' => ['ad-id', 'ad-privacy'],
+        ],
+        'tradetracker' => [
+            'enabled' => true,
+            'name' => 'TradeTracker',
+            'click_id_params' => ['ttid'],
+            'click_id_cookies' => [],
+            'parameters' => ['tradetracker', 'tt', 'ttid', 'tm_campaign', 'tm_source'],
+            'cookies' => [],
+        ],
+        'email_marketing' => [
+            'enabled' => true,
+            'name' => 'Email Marketing',
+            'click_id_params' => [],
+            'click_id_cookies' => [],
+            'parameters' => ['mc_cid', 'mc_eid', 'utm_email', 'email_source', 'list_id'],
+            'cookies' => [],
+        ],
+    ],
+
+    /*
+     * Click ID Management System
+     * Configure priority-based click ID detection and extraction
+     */
+    'click_id_management' => [
+        'enabled' => true,
+        'google_click_ids' => [
+            'enabled' => true,
+            'priority' => ['gclid', 'wbraid', 'gbraid'],
+            'cookie_mapping' => [
+                'gclid' => '_gcl_aw',
+                'wbraid' => '_gcl_gb',
+                'gbraid' => '_gcl_ag',
+            ],
+            'extract_gclid_value' => true, // Extract actual ID from gclid cookie format
+        ],
+        'platform_priority' => [
+            'gclid' => 10,      // Google Ads - highest priority
+            'fbclid' => 9,      // Facebook/Meta
+            'msclkid' => 8,     // Microsoft/Bing
+            'ttclid' => 7,      // TikTok
+            'twclid' => 6,      // Twitter/X
+            'li_fat_id' => 5,   // LinkedIn
+            'epik' => 4,        // Pinterest
+            'rdt_cid' => 3,     // Reddit
+            'sscid' => 2,       // Snapchat
+            'gbraid' => 1,      // Google iOS tracking
+            'wbraid' => 1,      // Google iOS web-to-app
+        ],
+    ],
+
+    /*
+     * Wildcard Pattern Support
+     * Support for matching parameter and cookie patterns like _ga*, utm_*, etc.
+     */
+    'wildcard_patterns' => [
+        'enabled' => true,
+        'parameter_patterns' => ['gad_*', 'mm_*', 'utm_*', 'tm_*', 'tw_*', 'tt_*'],
+        'cookie_patterns' => ['_ga*', '_gcl*', '_fbp*', '_fbc*', '_ttp*', '_epik*', '_uet*', 'li_*'],
+    ],
+
     'tracking_urls' => [
         'google_ads' => 'utm_source=google&utm_medium=cpc&utm_term={keyword}&utm_content={creative}&mm_campaignid={campaignid}&mm_adgroupid={adgroupid}&mm_feedid={feeditemid}&mm_position={adposition}&mm_linterest={loc_interest_ms}&mm_lphys={loc_physical_ms}&mm_matchtype={matchtype}&mm_network={network}&mm_device={device}&mm_devicemodel={devicemodel}&mm_creative={creative}&mm_keyword={keyword}&mm_placement={placement}&mm_targetid={targetid}&mm_random={random}&mm_aceid={aceid}&mm_version=G3&gclid={gclid}&utm_campaign={_campaign}&gad_source=1&gad_campaignid={campaignid}&gbraid={gbraid}&wbraid={wbraid}',
 
@@ -447,5 +654,108 @@ return [
         'wp-admin', // WordPress admin (bot traffic)
         'wp-login', // WordPress login (bot traffic)
         'xmlrpc.php', // WordPress XML-RPC (bot traffic)
+    ],
+
+    /*
+     * Enhanced Event System
+     * Configure package events and listeners
+     */
+    'events' => [
+        'enabled' => true,
+        'listeners' => [
+            // 'Marshmallow\\MarketingData\\Events\\MarketingDataCreated' => [],
+            // 'Marshmallow\\MarketingData\\Events\\MarketingDataUpdated' => [],
+            // 'Marshmallow\\MarketingData\\Events\\ConversionTracked' => [],
+            // 'Marshmallow\\MarketingData\\Events\\ClickIdDetected' => [],
+        ],
+    ],
+
+    /*
+     * Observer System Configuration
+     * Automatic model observation and UTM data setting
+     */
+    'observers' => [
+        'enabled' => false,
+        'models' => [
+            // App\Models\Lead::class,
+            // App\Models\Order::class,
+        ],
+        'auto_set_utm' => true,
+        'auto_detect_click_ids' => true,
+        'forget_after_save' => true,
+    ],
+
+    /*
+     * Cookie Management Configuration
+     * Advanced cookie tracking with consent management
+     */
+    'cookie_management' => [
+        'enabled' => true,
+        'groups' => [
+            'analytics' => [
+                'cookies' => ['_ga', '_gid', '_ga_*'],
+                'required' => false,
+                'description' => 'Analytics and performance tracking',
+            ],
+            'advertising' => [
+                'cookies' => ['_gcl_*', '_fbp', 'fbc', 'ttclid', '_epik', '_uet*'],
+                'required' => false,
+                'description' => 'Advertising and marketing attribution',
+            ],
+            'functional' => [
+                'cookies' => ['session_id'],
+                'required' => true,
+                'description' => 'Essential website functionality',
+            ],
+        ],
+        'consent' => [
+            'enabled' => false,
+            'cookie_name' => 'cookie_consent',
+            'respect_consent' => true,
+            'default_consent' => [
+                'functional' => true,
+                'analytics' => false,
+                'advertising' => false,
+            ],
+        ],
+        'wildcard_support' => true,
+        'auto_register_exceptions' => true, // Automatically add marketing cookies to EncryptCookies exceptions
+    ],
+
+    /*
+     * Conversion Tracking Framework
+     * Configure conversion types and tracking
+     */
+    'conversions' => [
+        'enabled' => false,
+        'types' => [
+            'lead' => ['value' => null, 'priority' => 1, 'description' => 'Lead generation'],
+            'qualified_lead' => ['value' => null, 'priority' => 2, 'description' => 'Qualified lead'],
+            'converted_lead' => ['value' => null, 'priority' => 3, 'description' => 'Converted lead'],
+            'purchase' => ['value' => null, 'priority' => 5, 'description' => 'Purchase conversion'],
+        ],
+        'auto_track' => false,
+        'track_value' => true,
+    ],
+
+    /*
+     * E-commerce Tracking Configuration
+     * Product and transaction tracking
+     */
+    'ecommerce' => [
+        'enabled' => false,
+        'currency' => 'EUR',
+        'events' => [
+            'view_item' => true,
+            'add_to_cart' => true,
+            'remove_from_cart' => true,
+            'begin_checkout' => true,
+            'purchase' => true,
+        ],
+        'gtm_format' => true,
+        'platform_formats' => [
+            'google_ads' => true,
+            'meta' => true,
+        ],
     ],
 ];

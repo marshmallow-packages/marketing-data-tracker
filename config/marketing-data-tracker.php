@@ -1,6 +1,5 @@
 <?php
 
-// config for Marshmallow/MarketingData
 return [
     /*
      * The fully qualified class name of the marketing data model.
@@ -756,6 +755,19 @@ return [
         'platform_formats' => [
             'google_ads' => true,
             'meta' => true,
+        ],
+    ],
+
+    /*
+     * Performance & Caching Configuration
+     * Static cache for trait casts to improve performance
+     */
+    'cache' => [
+        'enabled' => false,
+        'prefix' => 'mm_marketing_data',
+        'keys' => [
+            'marketing_data_casts' => 'marketing_data_casts',
+            'marketing_parameter_casts' => 'marketing_parameter_casts',
         ],
     ],
 ];

@@ -47,8 +47,11 @@ trait HasMarketingData
     {
         $class = static::class;
 
+        // Check if caching is enabled
+        $cacheEnabled = config('marketing-data-tracker.cache.enabled', true);
+
         // Return cached marketing data casts if already compiled for this model class
-        if (isset(static::$marketingDataCastsCache[$class])) {
+        if ($cacheEnabled && isset(static::$marketingDataCastsCache[$class])) {
             return static::$marketingDataCastsCache[$class];
         }
 
@@ -58,7 +61,9 @@ trait HasMarketingData
             ->toArray();
 
         // Cache the result in memory for subsequent calls for this model class
-        static::$marketingDataCastsCache[$class] = $result;
+        if ($cacheEnabled) {
+            static::$marketingDataCastsCache[$class] = $result;
+        }
 
         return $result;
     }

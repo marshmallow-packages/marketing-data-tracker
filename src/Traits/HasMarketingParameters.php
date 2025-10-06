@@ -222,8 +222,11 @@ trait HasMarketingParameters
     {
         $class = static::class;
 
+        // Check if caching is enabled
+        $cacheEnabled = config('marketing-data-tracker.cache.enabled', true);
+
         // Return cached casts if already compiled for this model class
-        if (isset(static::$marketingParameterCastsCache[$class])) {
+        if ($cacheEnabled && isset(static::$marketingParameterCastsCache[$class])) {
             return static::$marketingParameterCastsCache[$class];
         }
 
@@ -235,7 +238,9 @@ trait HasMarketingParameters
         $casts[] = 'cookie_values';
 
         if (empty($casts)) {
-            static::$marketingParameterCastsCache[$class] = [];
+            if ($cacheEnabled) {
+                static::$marketingParameterCastsCache[$class] = [];
+            }
 
             return [];
         }
@@ -279,7 +284,9 @@ trait HasMarketingParameters
         $result = $casts->toArray();
 
         // Cache the result for subsequent calls for this model class
-        static::$marketingParameterCastsCache[$class] = $result;
+        if ($cacheEnabled) {
+            static::$marketingParameterCastsCache[$class] = $result;
+        }
 
         return $result;
     }
@@ -291,7 +298,7 @@ trait HasMarketingParameters
             $this->addSourceData($forget);
             $this->addCookieData($forget);
         } catch (Exception $exception) {
-            throw new Exception('Error setting Marketing data: '.$exception->getMessage());
+            throw new Exception('Error setting Marketing data: ' . $exception->getMessage());
         }
     }
 
@@ -382,7 +389,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_source;
         if ($this->utm_medium) {
-            $field .= ' - '.$this->utm_medium;
+            $field .= ' - ' . $this->utm_medium;
         }
 
         return Str::title($field);
@@ -402,7 +409,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_campaign;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();
@@ -412,7 +419,7 @@ trait HasMarketingParameters
     {
         $field = $this->utm_medium;
         if ($this->utm_term) {
-            $field .= ' - '.$this->utm_term;
+            $field .= ' - ' . $this->utm_term;
         }
 
         return Str::of($field)->limit(30)->headline()->toString();

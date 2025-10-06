@@ -2,7 +2,6 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -11,6 +10,13 @@ use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 trait HasMarketingData
 {
     protected array $queuedMarketingData = [];
+
+    /**
+     * Static cache for marketing data casts per model class to avoid expensive filtering and cache lookups.
+     *
+     * @var array
+     */
+    protected static $marketingDataCastsCache = [];
 
     public static function bootHasMarketingData(): void
     {
@@ -37,27 +43,24 @@ trait HasMarketingData
         return $this->morphOne(MarketingDataTracker::getMarketingDataClassName(), 'marketing_datable');
     }
 
-    public function getCacheKeyForMarketingDataCasts(): string
-    {
-        return Str::of('marshmallow_marketing_casts_')->append(class_basename($this))->lower();
-    }
-
     public function getMarketingDataCasts(): array
     {
-        $cacheKey = $this->getCacheKeyForMarketingDataCasts();
+        $class = static::class;
 
-        if (cache()->has($cacheKey)) {
-            return cache()->get($cacheKey);
+        // Return cached marketing data casts if already compiled for this model class
+        if (isset(static::$marketingDataCastsCache[$class])) {
+            return static::$marketingDataCastsCache[$class];
         }
 
-        $marketingDataCasts = collect($this->casts)
-            ->filter(fn($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
-            ->map(fn($cast, $key) => $key)
+        $result = collect($this->casts)
+            ->filter(fn ($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
+            ->map(fn ($cast, $key) => $key)
             ->toArray();
 
-        cache()->put($cacheKey, $marketingDataCasts, now()->addDay());
+        // Cache the result in memory for subsequent calls for this model class
+        static::$marketingDataCastsCache[$class] = $result;
 
-        return $marketingDataCasts;
+        return $result;
     }
 
     public function setAttribute($key, $value)

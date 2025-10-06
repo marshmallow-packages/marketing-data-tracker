@@ -212,16 +212,19 @@ trait HasMarketingParameters
 
     /**
      * Static cache for marketing parameter casts to avoid recalculation.
+     * Keys are fully qualified class names to support per-model caching.
      *
-     * @var array|null
+     * @var array
      */
-    protected static $marketingParameterCastsCache;
+    protected static $marketingParameterCastsCache = [];
 
     public function getHasMarketingParametersCasts()
     {
-        // Return cached casts if already compiled
-        if (static::$marketingParameterCastsCache !== null) {
-            return static::$marketingParameterCastsCache;
+        $class = static::class;
+
+        // Return cached casts if already compiled for this model class
+        if (isset(static::$marketingParameterCastsCache[$class])) {
+            return static::$marketingParameterCastsCache[$class];
         }
 
         $parameters = MarketingDataTracker::getMarketingDataParameters();
@@ -232,7 +235,7 @@ trait HasMarketingParameters
         $casts[] = 'cookie_values';
 
         if (empty($casts)) {
-            static::$marketingParameterCastsCache = [];
+            static::$marketingParameterCastsCache[$class] = [];
             return [];
         }
 
@@ -274,8 +277,8 @@ trait HasMarketingParameters
 
         $result = $casts->toArray();
 
-        // Cache the result for subsequent calls
-        static::$marketingParameterCastsCache = $result;
+        // Cache the result for subsequent calls for this model class
+        static::$marketingParameterCastsCache[$class] = $result;
 
         return $result;
     }

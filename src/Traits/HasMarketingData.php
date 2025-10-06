@@ -11,13 +11,6 @@ trait HasMarketingData
 {
     protected array $queuedMarketingData = [];
 
-    /**
-     * Static cache for marketing data casts per model class to avoid expensive filtering and cache lookups.
-     *
-     * @var array
-     */
-    protected static $marketingDataCastsCache = [];
-
     public static function bootHasMarketingData(): void
     {
         static::created(function (Model $marketing_datableModel): void {
@@ -45,27 +38,13 @@ trait HasMarketingData
 
     public function getMarketingDataCasts(): array
     {
-        $class = static::class;
-
-        // Check if caching is enabled
-        $cacheEnabled = config('marketing-data-tracker.cache.enabled', true);
-
-        // Return cached marketing data casts if already compiled for this model class
-        if ($cacheEnabled && isset(static::$marketingDataCastsCache[$class])) {
-            return static::$marketingDataCastsCache[$class];
-        }
-
-        $result = collect($this->casts)
-            ->filter(fn ($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
-            ->map(fn ($cast, $key) => $key)
+        $casts = collect($this->casts)
+            ->filter(fn($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
+            ->map(fn($cast, $key) => $key)
             ->toArray();
 
-        // Cache the result in memory for subsequent calls for this model class
-        if ($cacheEnabled) {
-            static::$marketingDataCastsCache[$class] = $result;
-        }
-
-        return $result;
+        ray($casts)->label('Marketing Data Casts');
+        return $casts;
     }
 
     public function setAttribute($key, $value)

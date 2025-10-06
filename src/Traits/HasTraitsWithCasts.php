@@ -23,7 +23,7 @@ trait HasTraitsWithCasts
         // Only compile trait casts once per class
         if (!isset(static::$compiledTraitCasts[$class])) {
             foreach (class_uses_recursive($class) as $trait) {
-                $method = 'get' . class_basename($trait) . 'Casts';
+                $method = 'get'.class_basename($trait).'Casts';
 
                 if (method_exists($class, $method)) {
                     $casts = $this->{$method}();

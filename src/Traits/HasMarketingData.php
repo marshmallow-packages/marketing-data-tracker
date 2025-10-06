@@ -2,9 +2,9 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\DB;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 trait HasMarketingData

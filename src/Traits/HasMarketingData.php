@@ -2,9 +2,10 @@
 
 namespace Marshmallow\MarketingData\Traits;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\DB;
 use Marshmallow\MarketingData\Facades\MarketingDataTracker;
 
 trait HasMarketingData
@@ -36,12 +37,27 @@ trait HasMarketingData
         return $this->morphOne(MarketingDataTracker::getMarketingDataClassName(), 'marketing_datable');
     }
 
+    public function getCacheKeyForMarketingDataCasts(): string
+    {
+        return Str::of('marshmallow_marketing_casts_')->append(class_basename($this))->lower();
+    }
+
     public function getMarketingDataCasts(): array
     {
-        return collect($this->casts)
-            ->filter(fn ($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
-            ->map(fn ($cast, $key) => $key)
+        $cacheKey = $this->getCacheKeyForMarketingDataCasts();
+
+        if (cache()->has($cacheKey)) {
+            return cache()->get($cacheKey);
+        }
+
+        $marketingDataCasts = collect($this->casts)
+            ->filter(fn($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
+            ->map(fn($cast, $key) => $key)
             ->toArray();
+
+        cache()->put($cacheKey, $marketingDataCasts, now()->addDay());
+
+        return $marketingDataCasts;
     }
 
     public function setAttribute($key, $value)

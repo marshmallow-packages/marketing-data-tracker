@@ -1,6 +1,5 @@
 <?php
 
-// config for Marshmallow/MarketingData
 return [
     /*
      * The fully qualified class name of the marketing data model.

@@ -59,8 +59,8 @@ trait HasMarketingData
         $allCasts = method_exists($this, 'getCasts') ? $this->getCasts() : $this->casts;
 
         $result = collect($allCasts)
-            ->filter(fn($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
-            ->map(fn($cast, $key) => $key)
+            ->filter(fn ($cast) => $cast == MarketingDataTracker::getMarketingDataCastClassName())
+            ->map(fn ($cast, $key) => $key)
             ->toArray();
 
         // Cache the result in memory for subsequent calls for this model class

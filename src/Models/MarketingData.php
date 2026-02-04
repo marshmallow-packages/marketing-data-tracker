@@ -53,6 +53,33 @@ class MarketingData extends Model
         ]);
     }
 
+    /**
+     * Add multiple marketing data parameters in a single database operation.
+     * This is more efficient than calling addMarketingData() multiple times.
+     *
+     * @param array $data Key-value pairs to add/merge
+     */
+    public function addMarketingDataBatch(array $data): void
+    {
+        if (empty($data)) {
+            return;
+        }
+
+        $current_data = $this->getDataArray();
+        $new_data = array_merge($current_data, $data);
+
+        // Remove any keys with empty values
+        foreach ($data as $key => $value) {
+            if (!filled($value)) {
+                $new_data = Arr::except($new_data, $key);
+            }
+        }
+
+        $this->update([
+            'data' => $new_data,
+        ]);
+    }
+
     public function getMarketingData(string $key)
     {
         $data = $this->getDataArray();

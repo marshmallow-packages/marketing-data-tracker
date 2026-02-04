@@ -293,13 +293,17 @@ trait HasMarketingParameters
             $allowed_parameters = MarketingDataTracker::getMarketingDataCookies();
 
             if (is_array($source_values) && !empty($source_values)) {
-                foreach ($source_values as $key => $value) {
-                    if (!in_array($key, $allowed_parameters)) {
-                        continue;
-                    }
-                    $this->{$key} = $value;
+                // Filter to only allowed parameters
+                $filtered_values = array_filter(
+                    $source_values,
+                    fn ($value, $key) => in_array($key, $allowed_parameters),
+                    ARRAY_FILTER_USE_BOTH
+                );
+
+                if (!empty($filtered_values)) {
+                    // Use batch method to avoid N+1 queries
+                    $this->setMarketingDataBatch($filtered_values);
                 }
-                $this->updateQuietly($source_values);
             }
         }
     }
@@ -322,13 +326,17 @@ trait HasMarketingParameters
             $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
 
             if (is_array($source_values) && !empty($source_values)) {
-                foreach ($source_values as $key => $value) {
-                    if (!in_array($key, $allowed_parameters)) {
-                        continue;
-                    }
-                    $this->{$key} = $value;
+                // Filter to only allowed parameters
+                $filtered_values = array_filter(
+                    $source_values,
+                    fn ($value, $key) => in_array($key, $allowed_parameters),
+                    ARRAY_FILTER_USE_BOTH
+                );
+
+                if (!empty($filtered_values)) {
+                    // Use batch method to avoid N+1 queries
+                    $this->setMarketingDataBatch($filtered_values);
                 }
-                $this->updateQuietly($source_values);
             }
         }
     }
@@ -346,14 +354,17 @@ trait HasMarketingParameters
             $allowed_parameters = MarketingDataTracker::getMarketingDataParameters();
 
             if (is_array($utm_values) && !empty($utm_values)) {
-                foreach ($utm_values as $key => $value) {
-                    if (!in_array($key, $allowed_parameters)) {
-                        continue;
-                    }
-                    $this->{$key} = $value;
-                }
+                // Filter to only allowed parameters
+                $filtered_values = array_filter(
+                    $utm_values,
+                    fn ($value, $key) => in_array($key, $allowed_parameters),
+                    ARRAY_FILTER_USE_BOTH
+                );
 
-                $this->updateQuietly($utm_values);
+                if (!empty($filtered_values)) {
+                    // Use batch method to avoid N+1 queries
+                    $this->setMarketingDataBatch($filtered_values);
+                }
             }
         }
     }

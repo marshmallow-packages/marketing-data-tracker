@@ -26,9 +26,8 @@ trait HasMarketingData
             }
 
             DB::afterCommit(function () use ($marketing_datableModel): void {
-                collect($marketing_datableModel->queuedMarketingData)->each(function ($value, $key) use ($marketing_datableModel): void {
-                    $marketing_datableModel->setMarketingData($key, $value);
-                });
+                // Use batch method to process all queued data in a single operation
+                $marketing_datableModel->setMarketingDataBatch($marketing_datableModel->queuedMarketingData);
                 $marketing_datableModel->queuedMarketingData = [];
             });
         });
@@ -96,6 +95,43 @@ trait HasMarketingData
         ]);
 
         $marketing_data->addMarketingData($key, $encoded_value);
+
+        return $this;
+    }
+
+    /**
+     * Set multiple marketing data parameters in a single database operation.
+     * This avoids the N+1 query problem when setting many parameters at once.
+     *
+     * @param array $data Key-value pairs of marketing data to set
+     * @return $this
+     */
+    public function setMarketingDataBatch(array $data)
+    {
+        if (empty($data)) {
+            return $this;
+        }
+
+        // Encode all values
+        $encoded_data = [];
+        foreach ($data as $key => $value) {
+            $encoded_data[$key] = $this->maybeEncodeMarketingDataValue($value);
+        }
+
+        if (!$this->exists) {
+            $this->queuedMarketingData = array_merge($this->queuedMarketingData, $encoded_data);
+
+            return $this;
+        }
+
+        // Get or create marketing data record (1 query)
+        $marketing_data = $this->marketing_data()->firstOrCreate([
+            'marketing_datable_id' => $this->id,
+            'marketing_datable_type' => get_class($this),
+        ]);
+
+        // Merge all data and update in a single operation (1 query)
+        $marketing_data->addMarketingDataBatch($encoded_data);
 
         return $this;
     }

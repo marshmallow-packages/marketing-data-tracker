@@ -71,6 +71,28 @@ return [
     ],
 
     /*
+     * Click Timestamp Tracking
+     * Captures first and last click timestamps in the session when any known
+     * click ID is detected (gclid, fbclid, msclkid, ttclid, etc.).
+     */
+    'click_timestamps' => [
+        'enabled' => true,
+        'keys' => [
+            // Google Ads
+            'gclid', 'gbraid', 'wbraid',
+            '_gcl_aw', '_gcl_ag', '_gcl_gb',
+            // Facebook / Meta
+            'fbclid', '_fbp', 'fbc',
+            // Microsoft Ads
+            'msclkid', '_uetsid', '_uetvid',
+            // TikTok
+            'ttclid', '_ttp',
+            // Pinterest
+            '_epik',
+        ],
+    ],
+
+    /*
      * The parameters that should are stored, but should be hidden.
      */
     'hidden_marketing_parameters' => [

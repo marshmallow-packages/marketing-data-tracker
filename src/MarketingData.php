@@ -116,6 +116,8 @@ class MarketingData
             $session_data = session()->get('mm_utm_values');
             $session_data['cookie_values'] = $cookie_values;
             $request->session()->put('mm_utm_values', $session_data);
+
+            self::captureClickTimestamp($cookie_values ?? []);
         }
     }
 
@@ -168,6 +170,8 @@ class MarketingData
 
         if ($parameter_values && ! empty($parameter_values)) {
             $request->session()->put($session_key, $parameter_values);
+
+            self::captureClickTimestamp($parameter_values);
         }
     }
 
@@ -211,6 +215,63 @@ class MarketingData
         if ($source_parameters && ! empty($source_parameters)) {
             $request->session()->put($session_key, $source_parameters);
         }
+    }
+
+    /**
+     * Capture the first and last click timestamp when any known click ID is detected.
+     *
+     * - `mm_click_first_captured_at` is set once when the first click ID appears.
+     * - `mm_click_last_captured_at` is updated on every new click ID detection.
+     *
+     * Configurable via `marketing-data-tracker.click_timestamps`.
+     */
+    public static function captureClickTimestamp(array $values): void
+    {
+        if (! config('marketing-data-tracker.click_timestamps.enabled', true)) {
+            return;
+        }
+
+        $clickIdKeys = self::getClickIdKeys();
+        $hasClickId = false;
+
+        foreach ($clickIdKeys as $key) {
+            if (! empty(Arr::get($values, $key))) {
+                $hasClickId = true;
+                break;
+            }
+        }
+
+        if (! $hasClickId) {
+            return;
+        }
+
+        $now = now()->toIso8601String();
+
+        if (! session()->has('mm_click_first_captured_at')) {
+            session(['mm_click_first_captured_at' => $now]);
+        }
+
+        session(['mm_click_last_captured_at' => $now]);
+    }
+
+    /**
+     * Get all known click ID keys from config, with a sensible fallback.
+     */
+    public static function getClickIdKeys(): array
+    {
+        $configKeys = config('marketing-data-tracker.click_timestamps.keys', []);
+
+        if (! empty($configKeys)) {
+            return $configKeys;
+        }
+
+        return [
+            'gclid', 'gbraid', 'wbraid', '_gcl_aw', '_gcl_ag', '_gcl_gb',
+            'fbclid', '_fbp', 'fbc',
+            'msclkid', '_uetsid', '_uetvid',
+            'ttclid', '_ttp',
+            '_epik',
+        ];
     }
 
     public static function getValuesFromSet(array $marketing_keys, array $data_set, bool $keep_empty_keys = false): array

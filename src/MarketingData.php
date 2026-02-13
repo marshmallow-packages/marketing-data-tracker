@@ -139,6 +139,37 @@ class MarketingData
             if ($gclid_request && $gclid_request == $gclid) {
                 return;
             }
+
+            // Check if request has a NEW click ID that differs from session
+            $clickIdKeys = ['gclid', 'gbraid', 'wbraid'];
+            $hasNewClickId = false;
+
+            foreach ($clickIdKeys as $key) {
+                $requestValue = $request->input($key);
+                $sessionValue = Arr::get($session_data, $key);
+
+                if ($requestValue && $requestValue !== $sessionValue) {
+                    $hasNewClickId = true;
+
+                    break;
+                }
+            }
+
+            if ($hasNewClickId) {
+                // Merge new click IDs into existing session data (preserve UTM attribution)
+                foreach ($clickIdKeys as $key) {
+                    $requestValue = $request->input($key);
+                    if ($requestValue) {
+                        $session_data[$key] = $requestValue;
+                    }
+                }
+
+                session()->put('mm_click_last_captured_at', now()->toDateTimeString());
+                $request->session()->put($session_key, $session_data);
+
+                return;
+            }
+
             if ($gclid || $session_data || $utm_source) {
                 return;
             }

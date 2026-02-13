@@ -150,6 +150,7 @@ class MarketingData
 
                 if ($requestValue && $requestValue !== $sessionValue) {
                     $hasNewClickId = true;
+
                     break;
                 }
             }

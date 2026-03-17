@@ -3,16 +3,17 @@
 namespace Marshmallow\MarketingData\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
 
 class MarketingDataCast implements CastsAttributes
 {
     /**
      * Cast the given value.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param string                              $key
-     * @param mixed                               $value
-     * @param array                               $attributes
+     * @param Model  $model
+     * @param string $key
+     * @param mixed  $value
+     * @param array  $attributes
      *
      * @return array
      */
@@ -24,10 +25,10 @@ class MarketingDataCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param string                              $key
-     * @param array                               $value
-     * @param array                               $attributes
+     * @param Model  $model
+     * @param string $key
+     * @param array  $value
+     * @param array  $attributes
      *
      * @return string
      */

@@ -93,7 +93,7 @@ it('can get all tracking parameters', function (): void {
     ]);
 
     // Create a new instance after config changes
-    $platformManager = new \Marshmallow\MarketingData\Services\PlatformManager;
+    $platformManager = new PlatformManager;
     $allParams = $platformManager->getAllTrackingParameters();
 
     expect($allParams)->toContain('gclid')

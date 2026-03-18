@@ -104,6 +104,7 @@ trait HasMarketingData
      * This avoids the N+1 query problem when setting many parameters at once.
      *
      * @param array $data Key-value pairs of marketing data to set
+     *
      * @return $this
      */
     public function setMarketingDataBatch(array $data)

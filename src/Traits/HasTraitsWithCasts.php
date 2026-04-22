@@ -29,7 +29,7 @@ trait HasTraitsWithCasts
         // running class_uses_recursive + two Collections + a unique() closure
         // on EVERY attribute read. On yardy-s001 that accounted for ~172 slow
         // traces per day (MM-21431).
-        if (! isset(self::$traitCastsCache[$class])) {
+        if (!isset(self::$traitCastsCache[$class])) {
             $casts = [];
 
             foreach (class_uses_recursive($class) as $trait) {

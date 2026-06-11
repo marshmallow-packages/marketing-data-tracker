@@ -68,7 +68,17 @@ class User extends Model
 
 **2. Add the middleware to your web routes:**
 
-In `app/Http/Kernel.php`:
+On Laravel 11+ register it in `bootstrap/app.php`:
+
+```php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->web(append: [
+        \Marshmallow\MarketingData\Middleware\ParseMarketingParameters::class,
+    ]);
+})
+```
+
+On Laravel 10, add it to the `web` group in `app/Http/Kernel.php`:
 
 ```php
 protected $middlewareGroups = [
@@ -340,16 +350,35 @@ php artisan vendor:publish --tag="marketing-data-tracker-config"
 
 ### Cookie Consent Management
 
+Consent handling lives under the `cookie_management` key, which also groups
+cookies into `analytics`, `advertising`, and `functional` buckets:
+
 ```php
-'cookie_consent' => [
+'cookie_management' => [
     'enabled' => true,
-    'default_consent' => [
-        'functional' => true,
-        'analytics' => false,
-        'advertising' => false,
+    'groups' => [
+        'analytics' => ['cookies' => ['_ga', '_gid', '_ga_*'], 'required' => false],
+        'advertising' => ['cookies' => ['_gcl_*', '_fbp', 'fbc'], 'required' => false],
+        'functional' => ['cookies' => ['session_id'], 'required' => true],
     ],
+    'consent' => [
+        'enabled' => false,
+        'cookie_name' => 'cookie_consent',
+        'respect_consent' => true,
+        'default_consent' => [
+            'functional' => true,
+            'analytics' => false,
+            'advertising' => false,
+        ],
+    ],
+    'wildcard_support' => true,
+    'auto_register_exceptions' => true,
 ],
 ```
+
+> When `auto_register_exceptions` is enabled (the default), the package
+> automatically adds all configured marketing cookies to Laravel's
+> `EncryptCookies` exceptions so they can be read in plain text.
 
 ---
 
@@ -427,7 +456,7 @@ use Marshmallow\MarketingData\Events\ClickIdDetected;
 // Listen to marketing data creation
 Event::listen(MarketingDataCreated::class, function ($event) {
     // Send to analytics when marketing data is first captured
-    Analytics::trackAcquisition($event->model, $event->getAttributionData());
+    Analytics::trackAcquisition($event->model, $event->getCreatedData());
 });
 
 // Listen to click ID detection
@@ -567,12 +596,19 @@ $user->trackConversion('purchase', 199.99);
 
 ### Facebook Conversions API
 
+Forward conversions to the Facebook Conversions API by listening for the
+`ConversionTracked` event and using the attribution data it carries:
+
 ```php
-// Track server-side Facebook conversions
-$user->trackFacebookConversion('Purchase', 199.99, [
-    'currency' => 'USD',
-    'contents' => $products,
-]);
+use Marshmallow\MarketingData\Events\ConversionTracked;
+
+Event::listen(ConversionTracked::class, function (ConversionTracked $event) {
+    FacebookConversions::send('Purchase', [
+        'value' => $event->conversionValue,
+        'currency' => $event->conversionCurrency,
+        'attribution' => $event->getAttributionData(),
+    ]);
+});
 ```
 
 ### Custom Analytics Platforms
@@ -597,7 +633,7 @@ Event::listen(ConversionTracked::class, function ($event) {
 composer test
 
 # Run with coverage
-composer test:coverage
+composer test-coverage
 ```
 
 ### Testing Marketing Attribution
@@ -617,20 +653,10 @@ $this->assertEquals('123', $user->gclid);
 
 ## 🚀 Performance
 
--   **Minimal Database Impact**: Efficient JSON storage with indexing
--   **Lazy Loading**: Marketing data loaded only when needed
--   **Caching**: Built-in caching for frequently accessed data
--   **Bulk Processing**: Handle high-traffic scenarios efficiently
-
-### Optimization Tips
-
-```php
-// Cache marketing data for high-traffic sites
-$user->cacheMarketingData();
-
-// Batch process marketing data
-MarketingDataTracker::batchProcess($users);
-```
+-   **Minimal Database Impact**: Marketing data is stored as JSON on a single related row per model.
+-   **Lazy Loading**: The `marketing_data` relation is loaded only when accessed.
+-   **Path Filtering**: Use the `ignore_paths` config to skip parsing on routes that never carry marketing parameters.
+-   **Batch Writes**: Use `setMarketingDataBatch()` on a model to write multiple parameters in one operation.
 
 ---
 
